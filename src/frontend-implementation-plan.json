@@ -1,66 +1,68 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix NewsPage PIN-gated add flow and preserve user-entered newspaper date",
+  "title": "NewsPage PIN → Options → Add/Remove dialog flow state machine (no auto-open)",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Adjust NewsPage PIN-gated “+” workflow so dialogs open only in the intended order and option labels use English “Add a Newspaper”.",
+      "summary": "Make the floating “+” button open only the PIN dialog (never the Add form directly) and ensure cancel/close leaves no other dialog open.",
       "acceptanceCriteria": [
-        "When the user clicks the floating “+” button, only the “Enter PIN” dialog opens.",
-        "After entering the correct PIN (93023) and submitting, the “Option” dialog opens and neither the Add form dialog nor the Remove dialog opens automatically.",
-        "Clicking the “Add a Newspaper” option closes the Options dialog and opens the Add Newspaper form dialog.",
-        "Clicking the “Remove News/Remove a Newspaper” option closes the Options dialog and opens the Remove dialog.",
-        "All user-facing labels for the add option use English text and read “Add a Newspaper” (not “Add News”)."
+        "When the user clicks the floating “+” button, only the PIN dialog opens.",
+        "After clicking “+”, the Add form dialog is not opened unless the user later selects “Add a Newspaper” from the Options UI.",
+        "If the user closes the PIN dialog (Cancel / outside click / Escape), no other dialog (Options/Add/Remove) opens."
       ],
       "file_operations": [
         {
           "path": "frontend/src/pages/NewsPage.tsx",
           "operation": "modify",
-          "description": "Rework the floating “+” click + PIN submit state transitions so “+” only opens the PIN dialog, successful PIN only opens the Options dialog, and the Add/Remove dialogs only open when their respective option buttons are clicked; ensure any dialog close/reset logic prevents unintended auto-opening. Also update the Options dialog button label to exactly “Add a Newspaper” (English) and ensure remove option text remains English. Verify the component's usage instructions before implementing."
+          "description": "Refactor the floating “+” button handler to transition into a single management-flow state that opens only the PIN dialog and clears prior state (PIN value/error and any dialog state). Ensure PIN dialog close (onOpenChange=false, Cancel button) transitions to a fully closed flow state so no Options/Add/Remove dialog can appear. Use existing shadcn-ui Dialog/Button components by composition only; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/newsManagementFlow.ts",
+          "operation": "create",
+          "description": "Add a small, explicit state machine/reducer for the NewsPage management flow (e.g., steps like CLOSED, PIN, OPTIONS, ADD, REMOVE) including reset helpers used by the “+” click and dialog close actions, to guarantee “+” starts with PIN only."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Preserve and validate the user-entered Month/Day/Year when publishing so the stored/displayed news date matches the form input.",
+      "summary": "After correct PIN, show only the Options UI and prevent keyboard Enter from auto-triggering Add/Remove actions.",
       "acceptanceCriteria": [
-        "Publishing a news item stores a date derived from the form’s Month/Day/Year inputs and the news list displays that stored date for the new item.",
-        "The backend no longer unconditionally uses Time.now() as the published item’s date when the user provided a date.",
-        "If the user enters an invalid date (e.g., non-numeric values or impossible month/day), the form shows an English validation error and does not publish.",
-        "Existing news items already stored continue to render without errors (they may keep their existing stored timestamps)."
+        "After a correct PIN, the Options dialog opens and remains open until the user clicks an option or closes it.",
+        "Pressing Enter in the PIN field submits the PIN but does not immediately open the Add form or Remove flow unless the user explicitly clicks an option in the Options dialog.",
+        "After an incorrect PIN, the PIN dialog remains open and no other dialog opens."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/utils/newsDate.ts",
-          "operation": "create",
-          "description": "Add a small date utility to (1) validate Month/Day/Year inputs (numeric and real calendar date) and (2) compute a bigint timestamp value compatible with the app’s existing date formatting (used by News.time). Return a clear error message for invalid dates (English)."
-        },
-        {
           "path": "frontend/src/pages/NewsPage.tsx",
           "operation": "modify",
-          "description": "Use the new date utility to validate the Month/Day/Year fields before publishing; on invalid input, show an English validation error and do not submit. On valid input, compute the intended timestamp and pass it through the publish flow so the stored/displayed date matches the user-entered date (no client-side substitution to “today”). Verify the component's usage instructions before implementing."
+          "description": "Update PIN submit handling so a correct PIN transitions only to the Options step (and does not cascade to Add/Remove). Adjust the PIN input key handling to prevent unwanted event propagation/implicit clicks when Enter is pressed (e.g., preventDefault/stopPropagation and/or submit via an explicit handler). Ensure incorrect PIN keeps the flow in the PIN step with error displayed. Use existing shadcn-ui Dialog/Input/Button components by composition only; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/newsManagementFlow.ts",
+          "operation": "modify",
+          "description": "Extend the flow state machine with explicit transitions for PIN success/failure and ensure there is no implicit transition from OPTIONS to ADD/REMOVE without an explicit user click."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Update the frontend publish hook to send the caller-provided timestamp when publishing news.",
+      "summary": "Implement a single, state-driven dialog flow (PIN → Options → Add/Remove) that guarantees only one dialog is open and resets consistently on close/reopen.",
       "acceptanceCriteria": [
-        "Backend publish method supports receiving the intended time value from the frontend (while remaining compatible with existing stored news records).",
-        "Frontend publish mutation passes the computed time value when publishing from the form.",
-        "News item display continues to use the stored time value for formatting (no client-side substitution to “today”)."
+        "At most one of these dialogs is open at any time: PIN dialog, Options dialog, Add form dialog, Remove dialog.",
+        "Closing any dialog returns the user to a predictable state (e.g., closing Options returns to the News page with no dialog open).",
+        "Re-opening the “+” flow after a prior attempt starts from a clean state (PIN input cleared, errors cleared, and no previously-open dialog is shown)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useNews.ts",
+          "path": "frontend/src/pages/newsManagementFlow.ts",
           "operation": "modify",
-          "description": "Update the publish mutation to accept a timestamp argument and call the backend publish capability with (title, description, timestamp); keep query invalidation behavior unchanged."
+          "description": "Finalize the reducer/state helpers to enforce mutual exclusivity (single active step) and provide a single close/reset action used by all dialogs. Include helper(s) to reset per-step transient state (PIN/error, selected removal item/error, add-form errors) when transitioning or closing."
         },
         {
           "path": "frontend/src/pages/NewsPage.tsx",
           "operation": "modify",
-          "description": "Update the publish call site to pass the computed timestamp from the form date inputs into the updated publish hook; ensure the news list continues to format and display the stored News.time value as-is. Verify the component's usage instructions before implementing."
+          "description": "Replace the four independent boolean dialog states with the single flow step (and derive Dialog open props from it). Wire all Dialog onOpenChange handlers to the same close/reset transition so outside click/Escape produces consistent cleanup. Ensure the Add and Remove option buttons explicitly transition from OPTIONS → ADD/REMOVE only on click, and that closing Add/Remove returns to CLOSED (or a defined predictable step). Use existing shadcn-ui Dialog/Card/ScrollArea components by composition only; verify the component's usage instructions before implementing."
         }
       ]
     }

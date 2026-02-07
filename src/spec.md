@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Fix the NewsPage “+” PIN-gated add/remove flow so dialogs open in the correct order, and ensure published newspapers keep the user-entered date instead of being overwritten by the current time.
+**Goal:** Fix the NewsPage floating “+” management flow so it reliably follows PIN → Options → Add/Remove without auto-opening the Add form or triggering actions from keyboard events.
 
 **Planned changes:**
-- Update the floating “+” button behavior so it only opens the “Enter PIN” dialog; on correct PIN (93023), open only the Options dialog.
-- Ensure the Options dialog does not automatically open Add/Remove dialogs; open “Add Newspaper” or “Remove News/Remove a Newspaper” only after the user selects the corresponding option, and label the add option as “Add a Newspaper”.
-- Preserve the Month/Day/Year date entered in the Add Newspaper form by validating it and using it as the stored/displayed date for the new news item.
-- Update the backend publish API to accept an optional caller-provided timestamp for the news item time field, and update the frontend publish logic to send the computed timestamp from the form date inputs.
+- Rebuild the floating “+” button interaction so clicking it opens only the PIN dialog and never opens the “Fill in your Newspaper” (Add a Newspaper) form directly.
+- Adjust PIN submit behavior so a correct PIN opens only the Options UI (Add a Newspaper / Remove a Newspaper) and does not auto-trigger either option (including via Enter key behavior).
+- Implement a single, explicit state-driven dialog flow ensuring only one dialog is open at a time (PIN, Options, Add, or Remove) and that closing any dialog resets to a predictable clean state (cleared PIN/errors, no leftover dialogs).
 
-**User-visible outcome:** Clicking “+” first asks for the PIN, then shows Options; Add/Remove screens open only when chosen. When publishing a newspaper, the app keeps and displays the date entered in the form (with English validation errors for invalid dates).
+**User-visible outcome:** Clicking “+” always prompts for the PIN first; after entering the correct PIN, users see an Options dialog and can choose Add or Remove explicitly—no dialogs auto-open, and closing any dialog cleanly returns to the News page.

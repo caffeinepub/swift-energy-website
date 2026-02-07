@@ -1,34 +1,34 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Website/admin UI for managing news/newspapers with a PIN-gated add/remove flow; personalize the homepage label to \"Swift Energy Website\".",
+  "summary": "Rework the Fill Newspaper page's + button and option flow so it no longer auto-opens Add Newspaper; instead it should show an options menu, require PIN entry, and only navigate to Add Newspaper when the user selects \"Add a Newspaper\" after PIN validation.",
   "architectural_notes": [
-    "PIN-gated + button should open an Option menu (Add Newspaper / Remove News) rather than directly launching the add flow."
+    "Navigation to Add Newspaper must be gated behind: '+' tap -> options menu -> PIN entry/validation -> explicit \"Add a Newspaper\" selection."
   ],
   "known_issues": [
-    "Uploading a newspaper currently overwrites its date with the current date."
+    "Current behavior: tapping '+' immediately opens Add Newspaper instead of waiting for option selection after PIN entry."
   ],
   "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-rework-the-newspage-pin-gated-flow-so-clicking-the-floating-button-only-opens-the-pin-dialog-after-a-correct-pin-only-show-the-options-dialog-and-do-not-open-the-add-newspaper-form-unless-the-user-explicitly-clicks-the-add-a-newspaper-option",
-      "title": "Rework the NewsPage PIN-gated “+” flow so clicking the floating “+” button only opens the PIN dialog; after a correct PIN, only show the Options dialog, and do not open the Add Newspaper form unless the user explicitly clicks the “Add a Newspaper” option.",
+      "id": "feature-on-the-news-page-fill-in-your-newspaper-flow-rebuild-the-floating-button-interaction-so-it-never-opens-the-fill-in-your-newspaper-add-a-newspaper-form-directly-clicking-must-only-open-the-pin-dialog",
+      "title": "On the News page (Fill in your Newspaper flow), rebuild the floating “+” button interaction so it never opens the “Fill in your Newspaper” (Add a Newspaper) form directly. Clicking “+” must only open the PIN dialog.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-preserve-the-user-entered-date-when-publishing-a-newspaper-use-the-month-day-year-values-from-the-add-newspaper-form-as-the-stored-displayed-date-for-the-new-item-instead-of-overwriting-it-with-the-current-date-time-at-upload",
-      "title": "Preserve the user-entered date when publishing a newspaper: use the Month/Day/Year values from the Add Newspaper form as the stored/displayed date for the new item, instead of overwriting it with the current date/time at upload.",
+      "id": "feature-rework-the-pin-submit-behavior-on-newspage-so-that-after-entering-the-correct-pin-the-app-shows-only-the-options-ui-with-add-a-newspaper-and-remove-a-newspaper-and-does-not-automatically-trigger-either-option-due-to-keyboard-events-e-g-pressing-enter-in-the-pin-field",
+      "title": "Rework the PIN submit behavior on NewsPage so that after entering the correct PIN, the app shows only the Options UI (with “Add a Newspaper” and “Remove a Newspaper”) and does not automatically trigger either option due to keyboard events (e.g., pressing Enter in the PIN field).",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-update-the-backend-publish-api-to-accept-a-caller-provided-timestamp-or-optional-timestamp-for-the-news-item-time-field-and-update-the-frontend-publish-hook-to-send-the-computed-timestamp-based-on-the-form-date-inputs",
-      "title": "Update the backend publish API to accept a caller-provided timestamp (or optional timestamp) for the news item time field, and update the frontend publish hook to send the computed timestamp based on the form date inputs.",
+      "id": "feature-implement-a-single-explicit-state-driven-flow-for-the-newspage-management-dialogs-pin-options-add-or-remove-that-prevents-conflicting-dialog-states-e-g-options-and-add-open-at-the-same-time-and-ensures-consistent-reset-behavior-when-dialogs-are-closed",
+      "title": "Implement a single, explicit state-driven flow for the NewsPage management dialogs (PIN → Options → Add or Remove) that prevents conflicting dialog states (e.g., Options and Add open at the same time) and ensures consistent reset behavior when dialogs are closed.",
       "reqIds": [
         "REQ-3"
       ],
@@ -38,18 +38,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Change + button behavior: after PIN entry show an Option menu (Add/Remove) and only open the Add Newspaper flow when the user selects \"Add a Newspaper\".",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Preserve the intended newspaper date on upload (do not automatically overwrite it with the current date).",
+      "summary": "Redo the Fill Newspaper page '+' button/options system: do not auto-open Add Newspaper on '+' tap; show option menu, require PIN entry, and only open Add Newspaper when \"Add a Newspaper\" is selected after PIN validation.",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Swift Energy Website",
+  "projectName": "Rework NewsPage “+” button PIN/options flow to prevent auto-opening Add Newspaper",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

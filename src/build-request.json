@@ -1,75 +1,75 @@
 {
   "kind": "build_request",
-  "title": "Fix NewsPage add-flow gating and preserve user-entered newspaper date",
-  "priority": "normal",
+  "title": "Rework NewsPage “+” button PIN/options flow to prevent auto-opening Add Newspaper",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Rework the NewsPage PIN-gated “+” flow so clicking the floating “+” button only opens the PIN dialog; after a correct PIN, only show the Options dialog, and do not open the Add Newspaper form unless the user explicitly clicks the “Add a Newspaper” option.",
+      "text": "On the News page (Fill in your Newspaper flow), rebuild the floating “+” button interaction so it never opens the “Fill in your Newspaper” (Add a Newspaper) form directly. Clicking “+” must only open the PIN dialog.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-9"
+          "recent-messages-6",
+          "recent-messages-10"
         ],
         "quotes": [
-          "bro rework it when i click the + button it immediately opens the add newspaper can you make it only open if i click the Add a Newspaper in the option part after i enter the pin."
+          "rework it when i click the + button it immediately opens the add newspaper",
+          "remake the whole button and system for the fill newspaper page"
         ]
       },
       "acceptanceCriteria": [
-        "When the user clicks the floating “+” button, only the “Enter PIN” dialog opens.",
-        "After entering the correct PIN (93023) and submitting, the “Option” dialog opens and neither the Add form dialog nor the Remove dialog opens automatically.",
-        "Clicking the “Add a Newspaper” option closes the Options dialog and opens the Add Newspaper form dialog.",
-        "Clicking the “Remove News/Remove a Newspaper” option closes the Options dialog and opens the Remove dialog.",
-        "All user-facing labels for the add option use English text and read “Add a Newspaper” (not “Add News”)."
+        "When the user clicks the floating “+” button, only the PIN dialog opens.",
+        "After clicking “+”, the Add form dialog is not opened unless the user later selects “Add a Newspaper” from the Options UI.",
+        "If the user closes the PIN dialog (Cancel / outside click / Escape), no other dialog (Options/Add/Remove) opens."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Preserve the user-entered date when publishing a newspaper: use the Month/Day/Year values from the Add Newspaper form as the stored/displayed date for the new item, instead of overwriting it with the current date/time at upload.",
-      "target": "both",
+      "text": "Rework the PIN submit behavior on NewsPage so that after entering the correct PIN, the app shows only the Options UI (with “Add a Newspaper” and “Remove a Newspaper”) and does not automatically trigger either option due to keyboard events (e.g., pressing Enter in the PIN field).",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-9"
+          "recent-messages-6",
+          "recent-messages-10"
         ],
         "quotes": [
-          "Also when i upload a newspaper it immediately changes the date to the current date."
+          "can you make it only open if i click the Add a Newspaper in the option part after i enter the pin"
         ]
       },
       "acceptanceCriteria": [
-        "Publishing a news item stores a date derived from the form’s Month/Day/Year inputs and the news list displays that stored date for the new item.",
-        "The backend no longer unconditionally uses Time.now() as the published item’s date when the user provided a date.",
-        "If the user enters an invalid date (e.g., non-numeric values or impossible month/day), the form shows an English validation error and does not publish.",
-        "Existing news items already stored continue to render without errors (they may keep their existing stored timestamps)."
+        "After a correct PIN, the Options dialog opens and remains open until the user clicks an option or closes it.",
+        "Pressing Enter in the PIN field submits the PIN but does not immediately open the Add form or Remove flow unless the user explicitly clicks an option in the Options dialog.",
+        "After an incorrect PIN, the PIN dialog remains open and no other dialog opens."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Update the backend publish API to accept a caller-provided timestamp (or optional timestamp) for the news item time field, and update the frontend publish hook to send the computed timestamp based on the form date inputs.",
-      "target": "both",
+      "text": "Implement a single, explicit state-driven flow for the NewsPage management dialogs (PIN → Options → Add or Remove) that prevents conflicting dialog states (e.g., Options and Add open at the same time) and ensures consistent reset behavior when dialogs are closed.",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-9"
+          "recent-messages-6",
+          "recent-messages-10"
         ],
         "quotes": [
-          "Also when i upload a newspaper it immediately changes the date to the current date."
+          "remake the whole button and system for the fill newspaper page"
         ]
       },
       "acceptanceCriteria": [
-        "Backend publish method supports receiving the intended time value from the frontend (while remaining compatible with existing stored news records).",
-        "Frontend publish mutation passes the computed time value when publishing from the form.",
-        "News item display continues to use the stored time value for formatting (no client-side substitution to “today”)."
+        "At most one of these dialogs is open at any time: PIN dialog, Options dialog, Add form dialog, Remove dialog.",
+        "Closing any dialog returns the user to a predictable state (e.g., closing Options returns to the News page with no dialog open).",
+        "Re-opening the “+” flow after a prior attempt starts from a clean state (PIN input cleared, errors cleared, and no previously-open dialog is shown)."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
-    "Do not edit files under frontend/src/components/ui or any paths listed as immutable in SYSTEM_CONTEXT.",
-    "Use English for any user-facing text."
+    "Do not modify files in frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or anything under frontend/src/components/ui (compose them only).",
+    "Keep the backend API and data model unchanged for this request; this is a frontend interaction/flow fix on NewsPage."
   ],
   "nonGoals": [
-    "Changing the PIN value (93023) or adding a new authentication system beyond the existing PIN gate.",
-    "Adding rich media uploads (PDF/images) for newspapers; this change is only about the add/remove flow and the date being stored/displayed correctly.",
-    "Redesigning unrelated pages (Home/About/History/Innovations) beyond what’s needed to implement these fixes."
+    "Changing the correct PIN value (currently CORRECT_PIN = '93023').",
+    "Redesigning the News publishing/removal backend logic or storage.",
+    "Adding new authentication mechanisms beyond the existing PIN-gated UI."
   ],
   "imageRequirements": {
     "required": [],

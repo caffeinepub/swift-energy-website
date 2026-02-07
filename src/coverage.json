@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T09:08:52.232Z",
+  "generatedAt": "2026-02-07T09:15:36.058Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -12,56 +12,52 @@
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Rework the NewsPage PIN-gated “+” flow so clicking the floating “+” button only opens the PIN dialog; after a correct PIN, only show the Options dialog, and do not open the Add Newspaper form unless the user explicitly clicks the “Add a Newspaper” option.",
+        "summary": "On the News page (Fill in your Newspaper flow), rebuild the floating “+” button interaction so it never opens the “Fill in your Newspaper” (Add a Newspaper) form directly. Clicking “+” must only open the PIN dialog.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/NewsPage.tsx"
+          "frontend/src/pages/NewsPage.tsx",
+          "frontend/src/pages/newsManagementFlow.ts"
         ],
         "matchedFiles": [
-          "frontend/src/pages/NewsPage.tsx"
+          "frontend/src/pages/NewsPage.tsx",
+          "frontend/src/pages/newsManagementFlow.ts"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Preserve the user-entered date when publishing a newspaper: use the Month/Day/Year values from the Add Newspaper form as the stored/displayed date for the new item, instead of overwriting it with the current date/time at upload.",
+        "summary": "Rework the PIN submit behavior on NewsPage so that after entering the correct PIN, the app shows only the Options UI (with “Add a Newspaper” and “Remove a Newspaper”) and does not automatically trigger either option due to keyboard events (e.g., pressing Enter in the PIN field).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/utils/newsDate.ts",
-          "frontend/src/pages/NewsPage.tsx"
+          "frontend/src/pages/NewsPage.tsx",
+          "frontend/src/pages/newsManagementFlow.ts"
         ],
         "matchedFiles": [
-          "frontend/src/utils/newsDate.ts",
-          "frontend/src/pages/NewsPage.tsx"
+          "frontend/src/pages/NewsPage.tsx",
+          "frontend/src/pages/newsManagementFlow.ts"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Update the backend publish API to accept a caller-provided timestamp (or optional timestamp) for the news item time field, and update the frontend publish hook to send the computed timestamp based on the form date inputs.",
+        "summary": "Implement a single, explicit state-driven flow for the NewsPage management dialogs (PIN → Options → Add or Remove) that prevents conflicting dialog states (e.g., Options and Add open at the same time) and ensures consistent reset behavior when dialogs are closed.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useNews.ts",
+          "frontend/src/pages/newsManagementFlow.ts",
           "frontend/src/pages/NewsPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useNews.ts",
+          "frontend/src/pages/newsManagementFlow.ts",
           "frontend/src/pages/NewsPage.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
-    "frontend/src/hooks/useNews.ts",
     "frontend/src/pages/NewsPage.tsx",
-    "frontend/src/utils/newsDate.ts",
+    "frontend/src/pages/newsManagementFlow.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

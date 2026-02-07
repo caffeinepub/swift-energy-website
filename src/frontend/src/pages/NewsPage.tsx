@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { Plus, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -11,26 +11,12 @@ import { useGetAllNews, usePublishNews, useRemoveNews } from '@/hooks/useNews';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { validateAndConvertDate } from '@/utils/newsDate';
+import { flowReducer, initialFlowState } from './newsManagementFlow';
 
 const CORRECT_PIN = '93023';
 
 export default function NewsPage() {
-  const [showPinDialog, setShowPinDialog] = useState(false);
-  const [showOptionsDialog, setShowOptionsDialog] = useState(false);
-  const [showFormDialog, setShowFormDialog] = useState(false);
-  const [showRemoveDialog, setShowRemoveDialog] = useState(false);
-  const [pin, setPin] = useState('');
-  const [pinError, setPinError] = useState('');
-  
-  const [month, setMonth] = useState('');
-  const [day, setDay] = useState('');
-  const [year, setYear] = useState('');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [formError, setFormError] = useState('');
-
-  const [selectedNewsToRemove, setSelectedNewsToRemove] = useState<string>('');
-  const [removeError, setRemoveError] = useState('');
+  const [flowState, dispatch] = useReducer(flowReducer, initialFlowState);
 
   const { data: newsList = [], isLoading } = useGetAllNews();
   const publishNews = usePublishNews();
@@ -42,46 +28,43 @@ export default function NewsPage() {
     { src: '/assets/IMG-20260124-WA0020.jpg', alt: 'Team Photo 2' },
   ];
 
+  // Handlers
   const handlePlusClick = () => {
-    setPin('');
-    setPinError('');
-    setShowPinDialog(true);
+    dispatch({ type: 'START_FLOW' });
   };
 
   const handlePinSubmit = () => {
-    if (pin === CORRECT_PIN) {
-      setShowPinDialog(false);
-      setShowOptionsDialog(true);
-      setPinError('');
-    } else {
-      setPinError('Incorrect PIN. Please try again.');
+    dispatch({ type: 'SUBMIT_PIN', pin: flowState.pin, correctPin: CORRECT_PIN });
+  };
+
+  const handlePinKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      handlePinSubmit();
     }
   };
 
   const handleAddNewsClick = () => {
-    setShowOptionsDialog(false);
-    setShowFormDialog(true);
+    dispatch({ type: 'OPEN_ADD' });
   };
 
   const handleRemoveNewsClick = () => {
-    setShowOptionsDialog(false);
-    setSelectedNewsToRemove('');
-    setRemoveError('');
-    setShowRemoveDialog(true);
+    dispatch({ type: 'OPEN_REMOVE' });
   };
 
   const handleFormSubmit = async () => {
-    setFormError('');
+    const { month, day, year, title, description } = flowState;
 
     if (!month || !day || !year || !title || !description) {
-      setFormError('Please fill in all fields.');
+      dispatch({ type: 'SET_FORM_ERROR', error: 'Please fill in all fields.' });
       return;
     }
 
     // Validate and convert the date
     const dateResult = validateAndConvertDate(month, day, year);
     if (!dateResult.valid) {
-      setFormError(dateResult.error || 'Invalid date.');
+      dispatch({ type: 'SET_FORM_ERROR', error: dateResult.error || 'Invalid date.' });
       return;
     }
 
@@ -92,33 +75,36 @@ export default function NewsPage() {
         timestamp: dateResult.timestamp! 
       });
       
-      // Reset form
-      setMonth('');
-      setDay('');
-      setYear('');
-      setTitle('');
-      setDescription('');
-      setShowFormDialog(false);
+      // Reset form and close
+      dispatch({ type: 'RESET_FORM' });
+      dispatch({ type: 'CLOSE_FLOW' });
     } catch (error) {
-      setFormError('Failed to publish news. Please try again.');
+      dispatch({ type: 'SET_FORM_ERROR', error: 'Failed to publish news. Please try again.' });
     }
   };
 
   const handleRemoveSubmit = async () => {
-    setRemoveError('');
-
-    if (!selectedNewsToRemove) {
-      setRemoveError('Please select a news article to remove.');
+    if (!flowState.selectedNewsToRemove) {
+      dispatch({ type: 'SET_REMOVE_ERROR', error: 'Please select a news article to remove.' });
       return;
     }
 
     try {
-      await removeNews.mutateAsync(selectedNewsToRemove);
-      setSelectedNewsToRemove('');
-      setShowRemoveDialog(false);
+      await removeNews.mutateAsync(flowState.selectedNewsToRemove);
+      dispatch({ type: 'RESET_REMOVE' });
+      dispatch({ type: 'CLOSE_FLOW' });
     } catch (error) {
-      setRemoveError('Failed to remove news. Please try again.');
+      dispatch({ type: 'SET_REMOVE_ERROR', error: 'Failed to remove news. Please try again.' });
     }
+  };
+
+  const handleDialogClose = (dialogType: 'PIN' | 'OPTIONS' | 'ADD' | 'REMOVE') => {
+    // Only close if the user explicitly closes the dialog (not when transitioning)
+    return (open: boolean) => {
+      if (!open) {
+        dispatch({ type: 'CLOSE_FLOW' });
+      }
+    };
   };
 
   const formatDate = (time: bigint) => {
@@ -184,7 +170,7 @@ export default function NewsPage() {
       </Button>
 
       {/* PIN Entry Dialog */}
-      <Dialog open={showPinDialog} onOpenChange={setShowPinDialog}>
+      <Dialog open={flowState.step === 'PIN'} onOpenChange={handleDialogClose('PIN')}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Enter PIN</DialogTitle>
@@ -199,23 +185,19 @@ export default function NewsPage() {
                 id="pin"
                 type="password"
                 placeholder="Enter PIN"
-                value={pin}
-                onChange={(e) => setPin(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handlePinSubmit();
-                  }
-                }}
+                value={flowState.pin}
+                onChange={(e) => dispatch({ type: 'SET_PIN', pin: e.target.value })}
+                onKeyDown={handlePinKeyDown}
               />
             </div>
-            {pinError && (
+            {flowState.pinError && (
               <Alert variant="destructive">
-                <AlertDescription>{pinError}</AlertDescription>
+                <AlertDescription>{flowState.pinError}</AlertDescription>
               </Alert>
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowPinDialog(false)}>
+            <Button variant="outline" onClick={() => dispatch({ type: 'CLOSE_FLOW' })}>
               Cancel
             </Button>
             <Button onClick={handlePinSubmit}>Submit</Button>
@@ -224,7 +206,7 @@ export default function NewsPage() {
       </Dialog>
 
       {/* Options Dialog */}
-      <Dialog open={showOptionsDialog} onOpenChange={setShowOptionsDialog}>
+      <Dialog open={flowState.step === 'OPTIONS'} onOpenChange={handleDialogClose('OPTIONS')}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Option</DialogTitle>
@@ -252,7 +234,7 @@ export default function NewsPage() {
       </Dialog>
 
       {/* News Entry Form Dialog */}
-      <Dialog open={showFormDialog} onOpenChange={setShowFormDialog}>
+      <Dialog open={flowState.step === 'ADD'} onOpenChange={handleDialogClose('ADD')}>
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>Fill in your Newspaper</DialogTitle>
@@ -266,20 +248,20 @@ export default function NewsPage() {
               <div className="flex gap-2 items-center">
                 <Input
                   placeholder="Month"
-                  value={month}
-                  onChange={(e) => setMonth(e.target.value)}
+                  value={flowState.month}
+                  onChange={(e) => dispatch({ type: 'SET_FORM_FIELD', field: 'month', value: e.target.value })}
                   className="flex-1"
                 />
                 <Input
                   placeholder="Day"
-                  value={day}
-                  onChange={(e) => setDay(e.target.value)}
+                  value={flowState.day}
+                  onChange={(e) => dispatch({ type: 'SET_FORM_FIELD', field: 'day', value: e.target.value })}
                   className="flex-1"
                 />
                 <Input
                   placeholder="Year"
-                  value={year}
-                  onChange={(e) => setYear(e.target.value)}
+                  value={flowState.year}
+                  onChange={(e) => dispatch({ type: 'SET_FORM_FIELD', field: 'year', value: e.target.value })}
                   className="flex-1"
                 />
               </div>
@@ -290,8 +272,8 @@ export default function NewsPage() {
               <Input
                 id="news-title"
                 placeholder="Enter news title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={flowState.title}
+                onChange={(e) => dispatch({ type: 'SET_FORM_FIELD', field: 'title', value: e.target.value })}
               />
             </div>
             <div className="space-y-2">
@@ -299,19 +281,19 @@ export default function NewsPage() {
               <Textarea
                 id="news-description"
                 placeholder="Enter news description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={flowState.description}
+                onChange={(e) => dispatch({ type: 'SET_FORM_FIELD', field: 'description', value: e.target.value })}
                 rows={6}
               />
             </div>
-            {formError && (
+            {flowState.formError && (
               <Alert variant="destructive">
-                <AlertDescription>{formError}</AlertDescription>
+                <AlertDescription>{flowState.formError}</AlertDescription>
               </Alert>
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowFormDialog(false)}>
+            <Button variant="outline" onClick={() => dispatch({ type: 'CLOSE_FLOW' })}>
               Cancel
             </Button>
             <Button onClick={handleFormSubmit} disabled={publishNews.isPending}>
@@ -322,7 +304,7 @@ export default function NewsPage() {
       </Dialog>
 
       {/* Remove News Dialog */}
-      <Dialog open={showRemoveDialog} onOpenChange={setShowRemoveDialog}>
+      <Dialog open={flowState.step === 'REMOVE'} onOpenChange={handleDialogClose('REMOVE')}>
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>Remove a Newspaper</DialogTitle>
@@ -344,11 +326,11 @@ export default function NewsPage() {
                       <Card
                         key={index}
                         className={`cursor-pointer transition-all ${
-                          selectedNewsToRemove === news.title
+                          flowState.selectedNewsToRemove === news.title
                             ? 'border-primary bg-primary/5'
                             : 'hover:border-primary/50'
                         }`}
-                        onClick={() => setSelectedNewsToRemove(news.title)}
+                        onClick={() => dispatch({ type: 'SET_SELECTED_NEWS', title: news.title })}
                       >
                         <CardHeader className="p-4">
                           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
@@ -366,19 +348,19 @@ export default function NewsPage() {
                 )}
               </ScrollArea>
             </div>
-            {removeError && (
+            {flowState.removeError && (
               <Alert variant="destructive">
-                <AlertDescription>{removeError}</AlertDescription>
+                <AlertDescription>{flowState.removeError}</AlertDescription>
               </Alert>
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowRemoveDialog(false)}>
+            <Button variant="outline" onClick={() => dispatch({ type: 'CLOSE_FLOW' })}>
               Cancel
             </Button>
             <Button
               onClick={handleRemoveSubmit}
-              disabled={removeNews.isPending || !selectedNewsToRemove}
+              disabled={removeNews.isPending || !flowState.selectedNewsToRemove}
               variant="destructive"
             >
               {removeNews.isPending ? 'Removing...' : 'Remove'}
