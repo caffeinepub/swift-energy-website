@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import InnovationsPage from './pages/InnovationsPage';
 import HistoryPage from './pages/HistoryPage';
+import NewsPage from './pages/NewsPage';
 
 const queryClient = new QueryClient();
 
@@ -36,7 +37,13 @@ const historyRoute = createRoute({
   component: HistoryPage,
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, aboutRoute, innovationsRoute, historyRoute]);
+const newsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/news',
+  component: NewsPage,
+});
+
+const routeTree = rootRoute.addChildren([indexRoute, aboutRoute, innovationsRoute, historyRoute, newsRoute]);
 
 const router = createRouter({ routeTree });
 

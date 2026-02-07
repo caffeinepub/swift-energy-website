@@ -1,46 +1,90 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Innovation card images on Innovations page",
+  "title": "News page: remove date autofill, add date format helper text, and add PIN-gated Options + Remove News flow",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Show a corresponding image beside the text content for each innovation card with responsive stacking and correct alt text.",
+      "summary": "Remove the date autofill control and any autofill handler logic from the News entry form.",
       "acceptanceCriteria": [
-        "Each of the three innovation cards on the Innovations page shows the correct corresponding image next to the innovation text.",
-        "The layout is responsive: on smaller screens the image and text stack cleanly without overflow, and on larger screens the image appears beside the text.",
-        "Each image includes appropriate alt text matching the innovation title."
+        "In the \"Fill in your Newspaper\" dialog, there is no calendar/autofill button/icon next to the Month/Day/Year inputs.",
+        "No code path remains that sets the date fields automatically (e.g., remove/stop using the autofill handler)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/InnovationsPage.tsx",
+          "path": "frontend/src/pages/NewsPage.tsx",
           "operation": "modify",
-          "description": "Extend the innovations data to include a per-innovation image src mapped to /assets/Artifyer The Canvas Experience.png, /assets/OSC.png, and /assets/The GPR.jpg, and update the card layout to render an <img> beside the existing title/description (responsive: stacked on small screens, side-by-side on larger screens) with alt text set to the innovation title."
+          "description": "Remove the date autofill button next to Month/Day/Year inputs and delete the associated autofill handler/state updates so there is no remaining automatic date population path. Use existing shadcn-ui Dialog/Input/Button composition (do not edit components under frontend/src/components/ui). Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Add the uploaded innovation images as frontend public assets and reference them via /assets/... paths.",
+      "summary": "Add English helper text next to the date inputs clarifying Month/Day/Year format.",
       "acceptanceCriteria": [
-        "The three uploaded image files are present in the frontend static assets and load successfully in the browser (no broken images).",
-        "The Innovations page references the images via /assets/... paths (consistent with existing slider images)."
+        "A visible helper line is shown in the Date section clarifying the expected format (e.g., \"Format: MM / DD / YYYY\").",
+        "The helper text is located adjacent to the Month/Day/Year inputs so it is seen while filling the date."
       ],
       "file_operations": [
         {
-          "path": "frontend/public/assets/Artifyer The Canvas Experience.png",
-          "operation": "create",
-          "description": "Add the uploaded image file to the public assets directory so it is available at runtime via /assets/Artifyer The Canvas Experience.png."
+          "path": "frontend/src/pages/NewsPage.tsx",
+          "operation": "modify",
+          "description": "Add a visible helper line in the Date section adjacent to the Month/Day/Year inputs (e.g., \"Format: MM / DD / YYYY\") so users can distinguish the fields while entering the date. Compose with existing shadcn-ui Label/Input styles (no edits under frontend/src/components/ui). Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "After correct PIN entry, show an Options view titled \"Option\" with choices for Add News or Remove News.",
+      "acceptanceCriteria": [
+        "Submitting the correct PIN closes the PIN dialog and opens an Options view titled exactly \"Option\".",
+        "The Options view contains two clearly separated selectable controls labeled exactly \"Add News\" and \"Remove News\".",
+        "Selecting \"Add News\" opens the existing add-news form dialog.",
+        "Selecting \"Remove News\" opens the remove-news UI described in REQ-4."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/NewsPage.tsx",
+          "operation": "modify",
+          "description": "Refactor the post-PIN flow: on correct PIN, close the PIN dialog and open a new Options UI (Dialog or section) titled exactly \"Option\" that presents two clearly separated actions labeled exactly \"Add News\" and \"Remove News\". Wire \"Add News\" to open the existing \"Fill in your Newspaper\" dialog and wire \"Remove News\" to open the Remove News UI (REQ-4). Compose with existing shadcn-ui Dialog/Button/Card components (no edits under frontend/src/components/ui). Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Implement a frontend Remove News UI that lets the user choose an existing item and submit a removal request, updating the list without refresh.",
+      "acceptanceCriteria": [
+        "The UI displays a visible section (or dialog) titled exactly \"Remove a Newspaper\".",
+        "The remove UI provides a selector (e.g., dropdown/list) populated with existing news items so the user can choose one to remove.",
+        "A submit button triggers a removal request; on success, the removed item no longer appears in the Latest News list without a page refresh.",
+        "If removal fails, an English error message is shown and the item remains in the list."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/NewsPage.tsx",
+          "operation": "modify",
+          "description": "Add a \"Remove a Newspaper\" dialog/section opened from the Options view. Populate a selector UI using the already-fetched newsList (e.g., a scrollable list of selectable items/cards showing title and date) so a single item can be selected for removal. Add a submit button that triggers the remove mutation (REQ-5), shows loading/disabled state, and handles success (close dialog + updated list via query invalidation) and failure (display an English error message via existing Alert). Compose with existing shadcn-ui Dialog/Button/Card/Alert/Input/Label components (no edits under frontend/src/components/ui). Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Add a React Query mutation hook to call the backend removal capability and refetch news on success.",
+      "acceptanceCriteria": [
+        "Backend actor exposes a new update method to remove a specific news item deterministically (using an unambiguous identifier such as the news timestamp).",
+        "Frontend includes a new hook (similar to existing publish hook) to call the backend removal method and invalidates/refetches the ['news'] query on success.",
+        "Remove operations do not break existing publish/getAllNews behavior and newest-first ordering remains intact."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useNews.ts",
+          "operation": "modify",
+          "description": "Add a new React Query mutation hook (e.g., useRemoveNews) that calls the actor's existing removeNews capability and invalidates/refetches the ['news'] query on success, mirroring the existing publish hook behavior. Ensure errors propagate so the UI can show an English error message. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/public/assets/OSC.png",
-          "operation": "create",
-          "description": "Add the uploaded image file to the public assets directory so it is available at runtime via /assets/OSC.png."
-        },
-        {
-          "path": "frontend/public/assets/The GPR.jpg",
-          "operation": "create",
-          "description": "Add the uploaded image file to the public assets directory so it is available at runtime via /assets/The GPR.jpg."
+          "path": "frontend/src/pages/NewsPage.tsx",
+          "operation": "modify",
+          "description": "Integrate the new remove mutation hook into the Remove News flow: pass the selected item's identifier to the mutation, handle pending/success/error UI states, and rely on query invalidation to update the Latest News list without a refresh. Compose with existing shadcn-ui components (no edits under frontend/src/components/ui). Verify the component's usage instructions before implementing."
         }
       ]
     }

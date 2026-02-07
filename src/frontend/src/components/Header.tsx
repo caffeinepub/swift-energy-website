@@ -14,6 +14,7 @@ export default function Header() {
     { path: '/about', label: 'About' },
     { path: '/innovations', label: 'Our Innovations' },
     { path: '/history', label: 'History' },
+    { path: '/news', label: 'News' },
   ];
 
   return (

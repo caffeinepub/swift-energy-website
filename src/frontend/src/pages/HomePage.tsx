@@ -96,15 +96,13 @@ export default function HomePage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {coreValues.map((value, index) => (
             <Card key={index} className="border-border/50 transition-all hover:shadow-lg hover:border-primary/50">
-              <CardHeader className="pb-3">
-                <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <CardHeader className="pb-2">
+                <div className="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                   <value.icon className="h-5 w-5" />
                 </div>
-                <CardTitle className="text-lg">{value.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
+                <CardTitle className="text-lg mb-1">{value.title}</CardTitle>
                 <CardDescription className="text-sm">{value.description}</CardDescription>
-              </CardContent>
+              </CardHeader>
             </Card>
           ))}
         </div>
@@ -114,10 +112,13 @@ export default function HomePage() {
       <section className="bg-gradient-to-br from-primary/5 via-accent/5 to-background border-y border-border/40">
         <div className="container py-16 md:py-20">
           <div className="mx-auto max-w-4xl">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
+            <div className="text-center mb-4">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-3">
                 Our Nation
               </h2>
+              <p className="text-lg text-muted-foreground italic mb-8">
+                "A nation's culture resides in the hearts and in the soul of its people."
+              </p>
             </div>
             <div className="flex justify-center">
               <div className="w-full max-w-3xl">

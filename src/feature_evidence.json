@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-innovations-page-frontend-src-pages-innovationspage-tsx-so-each-innovation-card-displays-an-image-beside-the-innovation-content-title-description-using-the-user-uploaded-files-mapped-as-follows-artifyer-the-canvas-experience-artifyer-the-canvas-experience-png-oil-spill-catcher-osc-osc-png-the-gpr-the-gpr-jpg",
-      "featureTitle": "Update the Innovations page (frontend/src/pages/InnovationsPage.tsx) so each innovation card displays an image beside the innovation content (title/description), using the user-uploaded files mapped as follows: Artifyer: The Canvas Experience -> \"Artifyer The Canvas Experience.png\"; Oil Spill Catcher (OSC) -> \"OSC.png\"; The GPR -> \"The GPR.jpg\".",
+      "featureId": "feature-remove-the-date-autofill-control-from-the-news-entry-form-so-users-can-no-longer-auto-populate-month-day-year-with-today-s-date",
+      "featureTitle": "Remove the date autofill control from the News entry form so users can no longer auto-populate month/day/year with today's date.",
       "files": [
-        "frontend/src/pages/InnovationsPage.tsx"
+        "frontend/src/pages/NewsPage.tsx"
       ],
       "components": [
         "blob-storage@4.0.0",
@@ -17,6 +17,83 @@
       ],
       "testIds": [
         "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-clear-helper-text-near-the-date-inputs-on-the-news-entry-form-to-distinguish-month-day-and-year-english-user-facing-text",
+      "featureTitle": "Add clear helper text near the date inputs on the News entry form to distinguish Month, Day, and Year (English user-facing text).",
+      "files": [
+        "frontend/src/pages/NewsPage.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-after-the-user-enters-the-correct-pin-show-an-options-ui-titled-option-that-provides-two-selectable-choices-add-news-and-remove-news-instead-of-immediately-opening-the-add-news-form",
+      "featureTitle": "After the user enters the correct PIN, show an Options UI (titled \"Option\") that provides two selectable choices: \"Add News\" and \"Remove News\", instead of immediately opening the Add News form.",
+      "files": [
+        "frontend/src/pages/NewsPage.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-a-remove-news-flow-when-remove-news-is-selected-show-a-section-titled-remove-a-newspaper-with-a-control-to-choose-which-existing-news-item-text-article-to-remove-and-a-submit-action-that-removes-it-from-the-backend-and-updates-the-list",
+      "featureTitle": "Implement a Remove News flow: when \"Remove News\" is selected, show a section titled \"Remove a Newspaper\" with a control to choose which existing news item (text/article) to remove, and a submit action that removes it from the backend and updates the list.",
+      "files": [
+        "frontend/src/pages/NewsPage.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-backend-support-for-deleting-a-news-item-and-expose-it-to-the-frontend-via-a-new-react-query-mutation-hook-used-by-the-remove-news-flow",
+      "featureTitle": "Add backend support for deleting a news item and expose it to the frontend via a new React Query mutation hook used by the Remove News flow.",
+      "files": [
+        "frontend/src/hooks/useNews.ts",
+        "frontend/src/pages/NewsPage.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
       ],
       "confidence": "high"
     }
