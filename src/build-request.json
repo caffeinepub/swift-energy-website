@@ -1,75 +1,68 @@
 {
   "kind": "build_request",
-  "title": "Rework NewsPage “+” button PIN/options flow to prevent auto-opening Add Newspaper",
-  "priority": "high",
+  "title": "Add language selection menu with globe icon in header (desktop + mobile)",
+  "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "On the News page (Fill in your Newspaper flow), rebuild the floating “+” button interaction so it never opens the “Fill in your Newspaper” (Add a Newspaper) form directly. Clicking “+” must only open the PIN dialog.",
+      "text": "Add a language selector UI to the header with a globe (earth) icon button. On desktop (md and up), place the globe button immediately to the right of the existing \"News\" navigation link in the header’s desktop navigation row. On mobile (below md), place a globe icon button next to the existing hamburger (3 lines) menu button.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages-6",
-          "recent-messages-10"
+          "msg-5"
         ],
         "quotes": [
-          "rework it when i click the + button it immediately opens the add newspaper",
-          "remake the whole button and system for the fill newspaper page"
+          "can you add a languages menu there will be a button with a earth symbol right beside the News button(computer) or beside the 3 lines (in phone) when clicked a menu will be available to select languages"
         ]
       },
       "acceptanceCriteria": [
-        "When the user clicks the floating “+” button, only the PIN dialog opens.",
-        "After clicking “+”, the Add form dialog is not opened unless the user later selects “Add a Newspaper” from the Options UI.",
-        "If the user closes the PIN dialog (Cancel / outside click / Escape), no other dialog (Options/Add/Remove) opens."
+        "On desktop widths, a globe icon button is visible directly next to the \"News\" link in the header navigation area.",
+        "On mobile widths, a globe icon button is visible next to the hamburger menu button in the header.",
+        "Clicking/tapping the globe icon opens a menu/popup that lists available languages for selection.",
+        "The language selector UI is accessible: icon button has an aria-label, and menu items are keyboard-navigable."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Rework the PIN submit behavior on NewsPage so that after entering the correct PIN, the app shows only the Options UI (with “Add a Newspaper” and “Remove a Newspaper”) and does not automatically trigger either option due to keyboard events (e.g., pressing Enter in the PIN field).",
+      "text": "Implement language selection state with default language set to English on first app load. Provide a menu list containing exactly these languages (displayed in English): English (default), Hindi, Kazakhstan, Chinese, Spanish, Thailand, Russian, Japanese, French, Portugese, Italian, Arabic, Tagalog, Vietnamese, Indonesian. Selecting a language should immediately update the current selection state and reflect the selected item visually in the menu.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages-6",
-          "recent-messages-10"
+          "msg-5"
         ],
         "quotes": [
-          "can you make it only open if i click the Add a Newspaper in the option part after i enter the pin"
+          "select languages which are English which is standard and is picked immediately when the app opens and the languages for Hindi, Kazakhstan, Chinese, Spanish, Thailand, russian, japanese, french, portugese, italian, arabic, tagalog, vietnamese, indonesian"
         ]
       },
       "acceptanceCriteria": [
-        "After a correct PIN, the Options dialog opens and remains open until the user clicks an option or closes it.",
-        "Pressing Enter in the PIN field submits the PIN but does not immediately open the Add form or Remove flow unless the user explicitly clicks an option in the Options dialog.",
-        "After an incorrect PIN, the PIN dialog remains open and no other dialog opens."
+        "On first load (with no prior selection), English is selected by default.",
+        "The menu lists the languages: English, Hindi, Kazakhstan, Chinese, Spanish, Thailand, Russian, Japanese, French, Portugese, Italian, Arabic, Tagalog, Vietnamese, Indonesian.",
+        "When a user selects a language, the menu indicates the selected language (e.g., checkmark or highlighted state).",
+        "The selected language is available to the rest of the app via a shared state mechanism (e.g., context/provider or a dedicated hook)."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Implement a single, explicit state-driven flow for the NewsPage management dialogs (PIN → Options → Add or Remove) that prevents conflicting dialog states (e.g., Options and Add open at the same time) and ensures consistent reset behavior when dialogs are closed.",
+      "text": "Persist the selected language on the client so that refreshing the page or reopening the app restores the previously selected language; if no persisted value exists, fall back to English.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages-6",
-          "recent-messages-10"
-        ],
-        "quotes": [
-          "remake the whole button and system for the fill newspaper page"
+          "msg-5"
         ]
       },
       "acceptanceCriteria": [
-        "At most one of these dialogs is open at any time: PIN dialog, Options dialog, Add form dialog, Remove dialog.",
-        "Closing any dialog returns the user to a predictable state (e.g., closing Options returns to the News page with no dialog open).",
-        "Re-opening the “+” flow after a prior attempt starts from a clean state (PIN input cleared, errors cleared, and no previously-open dialog is shown)."
+        "After selecting a non-English language and refreshing the page, the selected language remains the same.",
+        "If persisted language data is cleared, the app returns to English as the default on next load."
       ]
     }
   ],
   "constraints": [
-    "Do not modify files in frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or anything under frontend/src/components/ui (compose them only).",
-    "Keep the backend API and data model unchanged for this request; this is a frontend interaction/flow fix on NewsPage."
+    "Do not modify any files under frontend/src/components/ui (compose using existing UI components instead).",
+    "Do not modify immutable hook files: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx."
   ],
   "nonGoals": [
-    "Changing the correct PIN value (currently CORRECT_PIN = '93023').",
-    "Redesigning the News publishing/removal backend logic or storage.",
-    "Adding new authentication mechanisms beyond the existing PIN-gated UI."
+    "Do not translate existing page content into the selected languages in this change (language selection only).",
+    "No backend changes or persistence to the Motoko canister are required for language selection."
   ],
   "imageRequirements": {
     "required": [],

@@ -1,68 +1,79 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "NewsPage PIN → Options → Add/Remove dialog flow state machine (no auto-open)",
+  "title": "Add header language selector with persistent client state",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Make the floating “+” button open only the PIN dialog (never the Add form directly) and ensure cancel/close leaves no other dialog open.",
+      "summary": "Add an accessible globe icon button in the header that opens a language selection menu on both desktop and mobile, positioned per breakpoint rules.",
       "acceptanceCriteria": [
-        "When the user clicks the floating “+” button, only the PIN dialog opens.",
-        "After clicking “+”, the Add form dialog is not opened unless the user later selects “Add a Newspaper” from the Options UI.",
-        "If the user closes the PIN dialog (Cancel / outside click / Escape), no other dialog (Options/Add/Remove) opens."
+        "On desktop widths, a globe icon button is visible directly next to the \"News\" link in the header navigation area.",
+        "On mobile widths, a globe icon button is visible next to the hamburger menu button in the header.",
+        "Clicking/tapping the globe icon opens a menu/popup that lists available languages for selection.",
+        "The language selector UI is accessible: icon button has an aria-label, and menu items are keyboard-navigable."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/NewsPage.tsx",
-          "operation": "modify",
-          "description": "Refactor the floating “+” button handler to transition into a single management-flow state that opens only the PIN dialog and clears prior state (PIN value/error and any dialog state). Ensure PIN dialog close (onOpenChange=false, Cancel button) transitions to a fully closed flow state so no Options/Add/Remove dialog can appear. Use existing shadcn-ui Dialog/Button components by composition only; verify the component's usage instructions before implementing."
+          "path": "frontend/src/components/LanguageSelector.tsx",
+          "operation": "create",
+          "description": "Create a reusable LanguageSelector component that renders a globe icon button (aria-label=\"Select language\") and an accessible, keyboard-navigable popup menu (supports focus management and Escape/Arrow key navigation) without modifying any files under frontend/src/components/ui."
         },
         {
-          "path": "frontend/src/pages/newsManagementFlow.ts",
-          "operation": "create",
-          "description": "Add a small, explicit state machine/reducer for the NewsPage management flow (e.g., steps like CLOSED, PIN, OPTIONS, ADD, REMOVE) including reset helpers used by the “+” click and dialog close actions, to guarantee “+” starts with PIN only."
+          "path": "frontend/src/components/Header.tsx",
+          "operation": "modify",
+          "description": "Wire LanguageSelector into the header: (1) on md+ desktop nav row, render it immediately to the right of the existing \"News\" link; (2) on mobile (<md), render it next to the existing hamburger menu button while preserving current Sheet behavior and layout."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "After correct PIN, show only the Options UI and prevent keyboard Enter from auto-triggering Add/Remove actions.",
+      "summary": "Implement shared language selection state (default English) with an exact fixed list of languages and visual indication of the selected item.",
       "acceptanceCriteria": [
-        "After a correct PIN, the Options dialog opens and remains open until the user clicks an option or closes it.",
-        "Pressing Enter in the PIN field submits the PIN but does not immediately open the Add form or Remove flow unless the user explicitly clicks an option in the Options dialog.",
-        "After an incorrect PIN, the PIN dialog remains open and no other dialog opens."
+        "On first load (with no prior selection), English is selected by default.",
+        "The menu lists the languages: English, Hindi, Kazakhstan, Chinese, Spanish, Thailand, Russian, Japanese, French, Portugese, Italian, Arabic, Tagalog, Vietnamese, Indonesian.",
+        "When a user selects a language, the menu indicates the selected language (e.g., checkmark or highlighted state).",
+        "The selected language is available to the rest of the app via a shared state mechanism (e.g., context/provider or a dedicated hook)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/NewsPage.tsx",
-          "operation": "modify",
-          "description": "Update PIN submit handling so a correct PIN transitions only to the Options step (and does not cascade to Add/Remove). Adjust the PIN input key handling to prevent unwanted event propagation/implicit clicks when Enter is pressed (e.g., preventDefault/stopPropagation and/or submit via an explicit handler). Ensure incorrect PIN keeps the flow in the PIN step with error displayed. Use existing shadcn-ui Dialog/Input/Button components by composition only; verify the component's usage instructions before implementing."
+          "path": "frontend/src/context/LanguageContext.tsx",
+          "operation": "create",
+          "description": "Add a LanguageProvider + React context that exposes the current language, the fixed allowed language list (exact labels), and a setter; initialize to English when no prior selection exists."
         },
         {
-          "path": "frontend/src/pages/newsManagementFlow.ts",
+          "path": "frontend/src/hooks/useLanguage.ts",
+          "operation": "create",
+          "description": "Create a dedicated hook that provides typed access to the LanguageContext (current language, available languages, setLanguage) for use across the app."
+        },
+        {
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Extend the flow state machine with explicit transitions for PIN success/failure and ensure there is no implicit transition from OPTIONS to ADD/REMOVE without an explicit user click."
+          "description": "Wrap the routed application with LanguageProvider (without modifying frontend/src/main.tsx) so the selected language is available as shared state throughout the app."
+        },
+        {
+          "path": "frontend/src/components/LanguageSelector.tsx",
+          "operation": "modify",
+          "description": "Connect LanguageSelector to the shared language state via useLanguage; render the menu items for exactly the specified languages, and visually indicate the currently selected language (e.g., checkmark and/or highlighted item styles)."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Implement a single, state-driven dialog flow (PIN → Options → Add/Remove) that guarantees only one dialog is open and resets consistently on close/reopen.",
+      "summary": "Persist selected language on the client and restore it on refresh/reopen with English as fallback.",
       "acceptanceCriteria": [
-        "At most one of these dialogs is open at any time: PIN dialog, Options dialog, Add form dialog, Remove dialog.",
-        "Closing any dialog returns the user to a predictable state (e.g., closing Options returns to the News page with no dialog open).",
-        "Re-opening the “+” flow after a prior attempt starts from a clean state (PIN input cleared, errors cleared, and no previously-open dialog is shown)."
+        "After selecting a non-English language and refreshing the page, the selected language remains the same.",
+        "If persisted language data is cleared, the app returns to English as the default on next load."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/newsManagementFlow.ts",
+          "path": "frontend/src/context/LanguageContext.tsx",
           "operation": "modify",
-          "description": "Finalize the reducer/state helpers to enforce mutual exclusivity (single active step) and provide a single close/reset action used by all dialogs. Include helper(s) to reset per-step transient state (PIN/error, selected removal item/error, add-form errors) when transitioning or closing."
+          "description": "Add client persistence using localStorage: on provider mount, load and validate the stored language against the allowed list; on changes, persist the selected language; if missing/invalid, fall back to English."
         },
         {
-          "path": "frontend/src/pages/NewsPage.tsx",
+          "path": "frontend/src/hooks/useLanguage.ts",
           "operation": "modify",
-          "description": "Replace the four independent boolean dialog states with the single flow step (and derive Dialog open props from it). Wire all Dialog onOpenChange handlers to the same close/reset transition so outside click/Escape produces consistent cleanup. Ensure the Add and Remove option buttons explicitly transition from OPTIONS → ADD/REMOVE only on click, and that closing Add/Remove returns to CLOSED (or a defined predictable step). Use existing shadcn-ui Dialog/Card/ScrollArea components by composition only; verify the component's usage instructions before implementing."
+          "description": "Ensure the hook’s exposed API reflects the persisted/rehydrated current selection and remains stable for consumers (no additional app-wide wiring changes required)."
         }
       ]
     }

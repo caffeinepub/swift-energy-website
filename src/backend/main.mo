@@ -1,8 +1,11 @@
-import List "mo:core/List";
+import Map "mo:core/Map";
 import Text "mo:core/Text";
 import Time "mo:core/Time";
 import Iter "mo:core/Iter";
 import MixinStorage "blob-storage/Mixin";
+
+
+// Use migration to update legacy deployments that used immutable lists
 
 actor {
   include MixinStorage();
@@ -13,7 +16,7 @@ actor {
     time : Time.Time;
   };
 
-  let news = List.empty<News>();
+  let news = Map.empty<Text, News>();
 
   public shared ({ caller }) func publishNews(title : Text, description : Text, timestamp : Time.Time) : async () {
     let newsItem : News = {
@@ -21,22 +24,14 @@ actor {
       description;
       time = timestamp;
     };
-    news.add(newsItem);
+    news.add(title, newsItem);
   };
 
   public shared ({ caller }) func removeNews(title : Text) : async () {
-    let filteredNewsIter = news.values().filter(
-      func(news) {
-        news.title != title;
-      }
-    );
-    news.clear();
-    for (filteredNews in filteredNewsIter) {
-      news.add(filteredNews);
-    };
+    news.remove(title);
   };
 
   public query ({ caller }) func getAllNews() : async [News] {
-    news.reverse().toArray();
+    news.values().toArray();
   };
 };

@@ -1,34 +1,32 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Rework the Fill Newspaper page's + button and option flow so it no longer auto-opens Add Newspaper; instead it should show an options menu, require PIN entry, and only navigate to Add Newspaper when the user selects \"Add a Newspaper\" after PIN validation.",
+  "summary": "New project",
   "architectural_notes": [
-    "Navigation to Add Newspaper must be gated behind: '+' tap -> options menu -> PIN entry/validation -> explicit \"Add a Newspaper\" selection."
+    "Language selector UI: globe button (desktop next to News; mobile next to hamburger) opens menu; default language is English on app launch; provide options for Hindi, Kazakh, Chinese, Spanish, Thai, Russian, Japanese, French, Portuguese, Italian, Arabic, Tagalog, Vietnamese, Indonesian."
   ],
-  "known_issues": [
-    "Current behavior: tapping '+' immediately opens Add Newspaper instead of waiting for option selection after PIN entry."
-  ],
-  "isFixRequest": true,
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-on-the-news-page-fill-in-your-newspaper-flow-rebuild-the-floating-button-interaction-so-it-never-opens-the-fill-in-your-newspaper-add-a-newspaper-form-directly-clicking-must-only-open-the-pin-dialog",
-      "title": "On the News page (Fill in your Newspaper flow), rebuild the floating “+” button interaction so it never opens the “Fill in your Newspaper” (Add a Newspaper) form directly. Clicking “+” must only open the PIN dialog.",
+      "id": "feature-add-a-language-selector-ui-to-the-header-with-a-globe-earth-icon-button-on-desktop-md-and-up-place-the-globe-button-immediately-to-the-right-of-the-existing-news-navigation-link-in-the-header-s-desktop-navigation-row-on-mobile-below-md-place-a-globe-icon-button-next-to-the-existing-hamburger-3-lines-menu-button",
+      "title": "Add a language selector UI to the header with a globe (earth) icon button. On desktop (md and up), place the globe button immediately to the right of the existing \"News\" navigation link in the header’s desktop navigation row. On mobile (below md), place a globe icon button next to the existing hamburger (3 lines) menu button.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-rework-the-pin-submit-behavior-on-newspage-so-that-after-entering-the-correct-pin-the-app-shows-only-the-options-ui-with-add-a-newspaper-and-remove-a-newspaper-and-does-not-automatically-trigger-either-option-due-to-keyboard-events-e-g-pressing-enter-in-the-pin-field",
-      "title": "Rework the PIN submit behavior on NewsPage so that after entering the correct PIN, the app shows only the Options UI (with “Add a Newspaper” and “Remove a Newspaper”) and does not automatically trigger either option due to keyboard events (e.g., pressing Enter in the PIN field).",
+      "id": "feature-implement-language-selection-state-with-default-language-set-to-english-on-first-app-load-provide-a-menu-list-containing-exactly-these-languages-displayed-in-english-english-default-hindi-kazakhstan-chinese-spanish-thailand-russian-japanese-french-portugese-italian-arabic-tagalog-vietnamese-indonesian-selecting-a-language-should-immediately-update-the-current-selection-state-and-reflect-the-selected-item-visually-in-the-menu",
+      "title": "Implement language selection state with default language set to English on first app load. Provide a menu list containing exactly these languages (displayed in English): English (default), Hindi, Kazakhstan, Chinese, Spanish, Thailand, Russian, Japanese, French, Portugese, Italian, Arabic, Tagalog, Vietnamese, Indonesian. Selecting a language should immediately update the current selection state and reflect the selected item visually in the menu.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-a-single-explicit-state-driven-flow-for-the-newspage-management-dialogs-pin-options-add-or-remove-that-prevents-conflicting-dialog-states-e-g-options-and-add-open-at-the-same-time-and-ensures-consistent-reset-behavior-when-dialogs-are-closed",
-      "title": "Implement a single, explicit state-driven flow for the NewsPage management dialogs (PIN → Options → Add or Remove) that prevents conflicting dialog states (e.g., Options and Add open at the same time) and ensures consistent reset behavior when dialogs are closed.",
+      "id": "feature-persist-the-selected-language-on-the-client-so-that-refreshing-the-page-or-reopening-the-app-restores-the-previously-selected-language-if-no-persisted-value-exists-fall-back-to-english",
+      "title": "Persist the selected language on the client so that refreshing the page or reopening the app restores the previously selected language; if no persisted value exists, fall back to English.",
       "reqIds": [
         "REQ-3"
       ],
@@ -38,12 +36,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Redo the Fill Newspaper page '+' button/options system: do not auto-open Add Newspaper on '+' tap; show option menu, require PIN entry, and only open Add Newspaper when \"Add a Newspaper\" is selected after PIN validation.",
+      "summary": "Add language selection menu with globe icon (desktop: next to News button; mobile: next to hamburger menu) and support default English plus listed languages",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Rework NewsPage “+” button PIN/options flow to prevent auto-opening Add Newspaper",
+  "projectName": "Add language selection menu with globe icon in header (desktop + mobile)",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

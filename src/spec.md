@@ -1,11 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Fix the NewsPage floating “+” management flow so it reliably follows PIN → Options → Add/Remove without auto-opening the Add form or triggering actions from keyboard events.
+**Goal:** Add an accessible language selection menu in the header for both desktop and mobile layouts, with persisted selection defaulting to English.
 
 **Planned changes:**
-- Rebuild the floating “+” button interaction so clicking it opens only the PIN dialog and never opens the “Fill in your Newspaper” (Add a Newspaper) form directly.
-- Adjust PIN submit behavior so a correct PIN opens only the Options UI (Add a Newspaper / Remove a Newspaper) and does not auto-trigger either option (including via Enter key behavior).
-- Implement a single, explicit state-driven dialog flow ensuring only one dialog is open at a time (PIN, Options, Add, or Remove) and that closing any dialog resets to a predictable clean state (cleared PIN/errors, no leftover dialogs).
+- Add a globe icon button to the header: on desktop (md+), place it immediately to the right of the existing “News” navigation link; on mobile (< md), place it next to the hamburger menu button.
+- Implement a language selection menu/popup opened by the globe button, listing exactly: English (default), Hindi, Kazakhstan, Chinese, Spanish, Thailand, Russian, Japanese, French, Portugese, Italian, Arabic, Tagalog, Vietnamese, Indonesian.
+- Add shared client-side language state (default English) that updates immediately on selection and visually indicates the selected language in the menu.
+- Persist the selected language on the client so it is restored on refresh/reopen; fall back to English when no saved value exists.
+- Ensure accessibility: globe button has an aria-label and the menu items support keyboard navigation.
 
-**User-visible outcome:** Clicking “+” always prompts for the PIN first; after entering the correct PIN, users see an Options dialog and can choose Add or Remove explicitly—no dialogs auto-open, and closing any dialog cleanly returns to the News page.
+**User-visible outcome:** Users can open a globe icon menu in the header (desktop and mobile), choose a language from the provided list, see the current selection indicated, and have their choice remembered across page reloads.

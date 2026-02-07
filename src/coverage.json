@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T09:15:36.058Z",
+  "generatedAt": "2026-02-07T11:59:10.088Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -12,41 +12,45 @@
     "items": [
       {
         "id": "REQ-1",
-        "summary": "On the News page (Fill in your Newspaper flow), rebuild the floating “+” button interaction so it never opens the “Fill in your Newspaper” (Add a Newspaper) form directly. Clicking “+” must only open the PIN dialog.",
+        "summary": "Add a language selector UI to the header with a globe (earth) icon button. On desktop (md and up), place the globe button immediately to the right of the existing \"News\" navigation link in the header’s desktop navigation row. On mobile (below md), place a globe icon button next to the existing hamburger (3 lines) menu button.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/NewsPage.tsx",
-          "frontend/src/pages/newsManagementFlow.ts"
+          "frontend/src/components/LanguageSelector.tsx",
+          "frontend/src/components/Header.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/NewsPage.tsx",
-          "frontend/src/pages/newsManagementFlow.ts"
+          "frontend/src/components/LanguageSelector.tsx",
+          "frontend/src/components/Header.tsx"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Rework the PIN submit behavior on NewsPage so that after entering the correct PIN, the app shows only the Options UI (with “Add a Newspaper” and “Remove a Newspaper”) and does not automatically trigger either option due to keyboard events (e.g., pressing Enter in the PIN field).",
+        "summary": "Implement language selection state with default language set to English on first app load. Provide a menu list containing exactly these languages (displayed in English): English (default), Hindi, Kazakhstan, Chinese, Spanish, Thailand, Russian, Japanese, French, Portugese, Italian, Arabic, Tagalog, Vietnamese, Indonesian. Selecting a language should immediately update the current selection state and reflect the selected item visually in the menu.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/NewsPage.tsx",
-          "frontend/src/pages/newsManagementFlow.ts"
+          "frontend/src/context/LanguageContext.tsx",
+          "frontend/src/hooks/useLanguage.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/components/LanguageSelector.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/NewsPage.tsx",
-          "frontend/src/pages/newsManagementFlow.ts"
+          "frontend/src/context/LanguageContext.tsx",
+          "frontend/src/hooks/useLanguage.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/components/LanguageSelector.tsx"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Implement a single, explicit state-driven flow for the NewsPage management dialogs (PIN → Options → Add or Remove) that prevents conflicting dialog states (e.g., Options and Add open at the same time) and ensures consistent reset behavior when dialogs are closed.",
+        "summary": "Persist the selected language on the client so that refreshing the page or reopening the app restores the previously selected language; if no persisted value exists, fall back to English.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/newsManagementFlow.ts",
-          "frontend/src/pages/NewsPage.tsx"
+          "frontend/src/context/LanguageContext.tsx",
+          "frontend/src/hooks/useLanguage.ts"
         ],
         "matchedFiles": [
-          "frontend/src/pages/newsManagementFlow.ts",
-          "frontend/src/pages/NewsPage.tsx"
+          "frontend/src/context/LanguageContext.tsx",
+          "frontend/src/hooks/useLanguage.ts"
         ]
       }
     ]
@@ -56,8 +60,11 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/pages/NewsPage.tsx",
-    "frontend/src/pages/newsManagementFlow.ts",
+    "frontend/src/App.tsx",
+    "frontend/src/components/Header.tsx",
+    "frontend/src/components/LanguageSelector.tsx",
+    "frontend/src/context/LanguageContext.tsx",
+    "frontend/src/hooks/useLanguage.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

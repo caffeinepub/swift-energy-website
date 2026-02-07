@@ -79,7 +79,7 @@ export default function NewsPage() {
       dispatch({ type: 'RESET_FORM' });
       dispatch({ type: 'CLOSE_FLOW' });
     } catch (error) {
-      dispatch({ type: 'SET_FORM_ERROR', error: 'Failed to publish news. Please try again.' });
+      dispatch({ type: 'SET_FORM_ERROR', error: 'Failed to publish news article. Please try again.' });
     }
   };
 
@@ -94,7 +94,7 @@ export default function NewsPage() {
       dispatch({ type: 'RESET_REMOVE' });
       dispatch({ type: 'CLOSE_FLOW' });
     } catch (error) {
-      dispatch({ type: 'SET_REMOVE_ERROR', error: 'Failed to remove news. Please try again.' });
+      dispatch({ type: 'SET_REMOVE_ERROR', error: 'Failed to remove news article. Please try again.' });
     }
   };
 
@@ -209,7 +209,7 @@ export default function NewsPage() {
       <Dialog open={flowState.step === 'OPTIONS'} onOpenChange={handleDialogClose('OPTIONS')}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Option</DialogTitle>
+            <DialogTitle>Options</DialogTitle>
             <DialogDescription>
               Choose an action to manage news articles.
             </DialogDescription>
@@ -220,14 +220,14 @@ export default function NewsPage() {
               className="w-full h-20 text-lg"
               variant="default"
             >
-              Add a Newspaper
+              Add a news article
             </Button>
             <Button
               onClick={handleRemoveNewsClick}
               className="w-full h-20 text-lg"
               variant="outline"
             >
-              Remove a Newspaper
+              Remove a news article
             </Button>
           </div>
         </DialogContent>
@@ -237,7 +237,7 @@ export default function NewsPage() {
       <Dialog open={flowState.step === 'ADD'} onOpenChange={handleDialogClose('ADD')}>
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Fill in your Newspaper</DialogTitle>
+            <DialogTitle>Add a news article</DialogTitle>
             <DialogDescription>
               Enter the details for your news article.
             </DialogDescription>
@@ -307,7 +307,7 @@ export default function NewsPage() {
       <Dialog open={flowState.step === 'REMOVE'} onOpenChange={handleDialogClose('REMOVE')}>
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Remove a Newspaper</DialogTitle>
+            <DialogTitle>Remove a news article</DialogTitle>
             <DialogDescription>
               Select a news article to remove from the list.
             </DialogDescription>
