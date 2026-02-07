@@ -1,0 +1,57 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-03T12:14:49.472Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 2,
+    "implemented": 1,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Update the Innovations page (frontend/src/pages/InnovationsPage.tsx) so each innovation card displays an image beside the innovation content (title/description), using the user-uploaded files mapped as follows: Artifyer: The Canvas Experience -> \"Artifyer The Canvas Experience.png\"; Oil Spill Catcher (OSC) -> \"OSC.png\"; The GPR -> \"The GPR.jpg\".",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/InnovationsPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/InnovationsPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Add the uploaded image files to the frontend static assets so they can be referenced by the Innovations page at runtime without using the backend (place them in a public assets directory and reference via an absolute /assets/... path consistent with existing usage on the page).",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/public/assets/Artifyer The Canvas Experience.png",
+          "frontend/public/assets/OSC.png",
+          "frontend/public/assets/The GPR.jpg"
+        ],
+        "matchedFiles": []
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "build-template/Dockerfile",
+    "build-template/LICENSE",
+    "build-template/README.md",
+    "build-template/deploy.sh",
+    "build-template/icp.yaml",
+    "build-template/src/backend/canister.yaml",
+    "build-template/src/frontend/canister.yaml",
+    "caffeine.lock.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/pages/InnovationsPage.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

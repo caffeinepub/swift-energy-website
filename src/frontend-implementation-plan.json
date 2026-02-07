@@ -1,0 +1,48 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Innovation card images on Innovations page",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Show a corresponding image beside the text content for each innovation card with responsive stacking and correct alt text.",
+      "acceptanceCriteria": [
+        "Each of the three innovation cards on the Innovations page shows the correct corresponding image next to the innovation text.",
+        "The layout is responsive: on smaller screens the image and text stack cleanly without overflow, and on larger screens the image appears beside the text.",
+        "Each image includes appropriate alt text matching the innovation title."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/InnovationsPage.tsx",
+          "operation": "modify",
+          "description": "Extend the innovations data to include a per-innovation image src mapped to /assets/Artifyer The Canvas Experience.png, /assets/OSC.png, and /assets/The GPR.jpg, and update the card layout to render an <img> beside the existing title/description (responsive: stacked on small screens, side-by-side on larger screens) with alt text set to the innovation title."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Add the uploaded innovation images as frontend public assets and reference them via /assets/... paths.",
+      "acceptanceCriteria": [
+        "The three uploaded image files are present in the frontend static assets and load successfully in the browser (no broken images).",
+        "The Innovations page references the images via /assets/... paths (consistent with existing slider images)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/assets/Artifyer The Canvas Experience.png",
+          "operation": "create",
+          "description": "Add the uploaded image file to the public assets directory so it is available at runtime via /assets/Artifyer The Canvas Experience.png."
+        },
+        {
+          "path": "frontend/public/assets/OSC.png",
+          "operation": "create",
+          "description": "Add the uploaded image file to the public assets directory so it is available at runtime via /assets/OSC.png."
+        },
+        {
+          "path": "frontend/public/assets/The GPR.jpg",
+          "operation": "create",
+          "description": "Add the uploaded image file to the public assets directory so it is available at runtime via /assets/The GPR.jpg."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "kind": "build_request",
+  "title": "Add innovation images beside each innovation card",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Update the Innovations page (frontend/src/pages/InnovationsPage.tsx) so each innovation card displays an image beside the innovation content (title/description), using the user-uploaded files mapped as follows: Artifyer: The Canvas Experience -> \"Artifyer The Canvas Experience.png\"; Oil Spill Catcher (OSC) -> \"OSC.png\"; The GPR -> \"The GPR.jpg\".",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-9"
+        ],
+        "quotes": [
+          "In the our innovations page add these photos to beside of each innovation. For The GPR use The GPR.jpg, for oil spill catcher use the OSC.png and for the Artifyer: The Canvas Experience use the Artifyer The Canvas Experience.png"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Each of the three innovation cards on the Innovations page shows the correct corresponding image next to the innovation text.",
+        "The layout is responsive: on smaller screens the image and text stack cleanly without overflow, and on larger screens the image appears beside the text.",
+        "Each image includes appropriate alt text matching the innovation title."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add the uploaded image files to the frontend static assets so they can be referenced by the Innovations page at runtime without using the backend (place them in a public assets directory and reference via an absolute /assets/... path consistent with existing usage on the page).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-9"
+        ],
+        "quotes": [
+          "The user has uploaded 3 image(s): Artifyer The Canvas Experience.png, The GPR.jpg, OSC.png."
+        ]
+      },
+      "acceptanceCriteria": [
+        "The three uploaded image files are present in the frontend static assets and load successfully in the browser (no broken images).",
+        "The Innovations page references the images via /assets/... paths (consistent with existing slider images)."
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not modify files under frontend/src/components/ui (read-only components); compose them as-is.",
+    "Do not add new backend canisters or services; keep changes frontend-only."
+  ],
+  "nonGoals": [
+    "Do not change the written descriptions/titles of the innovations (only add images and layout).",
+    "Do not add new innovations or new pages."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

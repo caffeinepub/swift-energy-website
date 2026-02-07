@@ -1,0 +1,210 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Swift Energy Website is a React + Tailwind single-page website for the Swift Energy LEGO robotics competition team. It provides public, mostly static informational pages (Home, About, Innovations, History) with consistent layout/navigation and rich content sections (cards, timelines, image banners). The codebase also includes optional Internet Identity authentication and ICP actor-creation helpers (likely from a template) plus a Motoko blob-storage mixin module for Caffeine/ICP storage operations (authorization via gateway principals, dead-blob pruning, and cycles refills), though the main backend actor is currently empty and the frontend does not actively fetch backend data.",
+  "existing_features": [
+    {
+      "id": "IF-1",
+      "title": "Client-side routed multi-page website",
+      "synonyms": [
+        "SPA routing",
+        "TanStack Router navigation"
+      ],
+      "description": "Implements client-side navigation between public pages (Home, About, Innovations, History) using TanStack Router with a root route and nested page routes.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-2",
+      "title": "Shared layout with header/footer",
+      "synonyms": [
+        "Layout wrapper",
+        "Consistent site chrome"
+      ],
+      "description": "Provides a shared Layout component that renders a sticky Header, an Outlet for page content, and a Footer across all routed pages.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-3",
+      "title": "Responsive header navigation with mobile drawer",
+      "synonyms": [
+        "Hamburger menu",
+        "Sheet navigation"
+      ],
+      "description": "Header includes desktop nav links and a mobile Sheet drawer menu, with active route highlighting based on the current pathname and branding/logo display.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-4",
+      "title": "Footer with attribution and branding",
+      "synonyms": [
+        "Site footer",
+        "Caffeine attribution"
+      ],
+      "description": "Footer displays the Swift Energy logo, copyright notice, caffeine.ai attribution link, and 'Powered by CK Education.' tagline.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-5",
+      "title": "Reusable responsive image slider component",
+      "synonyms": [
+        "Carousel",
+        "Banner slider"
+      ],
+      "description": "ImageSlider uses a Carousel component with looped slides, auto-advance on a 4s interval, pause-on-hover behavior, navigation arrows, and responsive image heights with gradient overlays.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-6",
+      "title": "Home page content sections",
+      "synonyms": [
+        "Landing page",
+        "Core values page"
+      ],
+      "description": "Home page includes a hero section with calls-to-action, a grid of core values cards, an 'Our Nation' section with Indonesia map image, and an 'Our Goals' section linking to an external feedback form.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-7",
+      "title": "About page with team overview and location",
+      "synonyms": [
+        "About Swift Energy",
+        "Team profiles"
+      ],
+      "description": "About page includes an image slider, goal/vision/values cards, a team photo, team member cards, a multi-paragraph team story, basic stats, and a location section with a generated map highlighting Banten, Indonesia.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-8",
+      "title": "Innovations page with project cards and impact section",
+      "synonyms": [
+        "Innovation showcase",
+        "Projects page"
+      ],
+      "description": "Innovations page includes an image slider, a hero section, three innovation cards (Artifyer, Oil Spill Catcher, GPR) with icons and gradient badges, and an impact/mission section.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-9",
+      "title": "History page with timeline and statistics",
+      "synonyms": [
+        "Journey timeline",
+        "Milestones page"
+      ],
+      "description": "History page includes an image slider, chronological milestone timeline cards with icon badges, a 'By the Numbers' stats grid, and a future vision section.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-10",
+      "title": "Tailwind theming with OKLCH tokens and dark mode",
+      "synonyms": [
+        "Design system tokens",
+        "Theme variables"
+      ],
+      "description": "Global CSS defines OKLCH-based CSS variables for light/dark themes, standard UI tokens (primary/accent/etc.), and a reusable grid-pattern background utility; Tailwind config extends colors/radii/animations and enables class-based dark mode.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-11",
+      "title": "Internet Identity authentication provider",
+      "synonyms": [
+        "II login",
+        "AuthClient integration"
+      ],
+      "description": "Implements an InternetIdentityProvider context managing AuthClient initialization, persisted identity loading, login/logout flows, delegation validity checks, and status flags (initializing/logging-in/success/error).",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-12",
+      "title": "Backend actor creation hook with identity-based initialization",
+      "synonyms": [
+        "useActor",
+        "ICP canister actor hook"
+      ],
+      "description": "useActor creates an anonymous or authenticated backend actor depending on Internet Identity state, optionally calls access-control initialization methods if present (including secret-token initialization via URL hash), and invalidates/refetches other React Query queries when the actor changes.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-13",
+      "title": "Secure URL secret and parameter utilities",
+      "synonyms": [
+        "Admin token via hash",
+        "URL param persistence"
+      ],
+      "description": "Provides utilities to read parameters from query or hash routing, persist values in sessionStorage, and securely extract secrets from the hash fragment with automatic removal from the URL to reduce leakage risk.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-14",
+      "title": "Motoko blob storage mixin (Caffeine/ICP storage maintenance)",
+      "synonyms": [
+        "Blob GC tooling",
+        "Gateway authorization",
+        "Cycles refill"
+      ],
+      "description": "Backend Motoko modules implement storage maintenance endpoints: environment-based cashier principal lookup, gateway principal list refresh, authorization checks, dead blob listing and confirmed pruning with explicit GC trigger, and cycles top-up (refill) to a cashier canister; also includes a stub 'create certificate' response.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-innovations-page-frontend-src-pages-innovationspage-tsx-so-each-innovation-card-displays-an-image-beside-the-innovation-content-title-description-using-the-user-uploaded-files-mapped-as-follows-artifyer-the-canvas-experience-artifyer-the-canvas-experience-png-oil-spill-catcher-osc-osc-png-the-gpr-the-gpr-jpg",
+      "title": "Update the Innovations page (frontend/src/pages/InnovationsPage.tsx) so each innovation card displays an image beside the innovation content (title/description), using the user-uploaded files mapped as follows: Artifyer: The Canvas Experience -> \"Artifyer The Canvas Experience.png\"; Oil Spill Catcher (OSC) -> \"OSC.png\"; The GPR -> \"The GPR.jpg\".",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "On Our Innovations page, display an image alongside each innovation card/section: Artifyer uses 'Artifyer The Canvas Experience.png', Oil Spill Catcher uses 'OSC.png', and The GPR uses 'The GPR.jpg'.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Add the uploaded image files to the frontend static assets so they can be referenced by the Innovations page at runtime without using the backend (place them in a public assets directory and reference via an absolute /assets/... path consistent with existing usage on the page).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    }
+  ],
+  "architecturalNotes": [
+    "Frontend is a SPA using TanStack Router for client-side routing and a shared Layout component (Header + Outlet + Footer).",
+    "Tailwind CSS with design tokens (OKLCH-based CSS variables) and class-based dark mode; shadcn/ui-style components (Card, Button, Sheet, Carousel) and lucide-react icons.",
+    "React Query is included as infrastructure; actor creation is handled via a React Query hook (useActor) keyed by the logged-in principal, with invalidation/refetch of dependent queries on identity change.",
+    "Internet Identity authentication is encapsulated in a React Context provider (InternetIdentityProvider) using @dfinity/auth-client and delegation validity checks.",
+    "Utility layer for secure URL secret handling via hash parameters + sessionStorage persistence (intended for admin tokens).",
+    "Backend includes Motoko modules implementing a 'mixin' pattern for reusable blob-storage lifecycle/GC operations and authorization management; backend/main.mo currently defines an empty actor."
+  ],
+  "knownIssues": [
+    "frontend/src/main.tsx and frontend/src/App.tsx both wrap the app with QueryClientProvider, creating nested providers with different QueryClient instances (potentially confusing and can lead to unexpected caching behavior).",
+    "frontend/src/hooks/useQueries.ts is intentionally empty; if any future data fetching is needed, query hooks are not implemented.",
+    "frontend/src/pages/MembersPage.tsx is empty and not routed from App.tsx (dead/unfinished page).",
+    "backend/main.mo is an empty actor; backend functionality is not exposed from the main canister as-is.",
+    "backend/blob-storage/Storage.mo refillCashier uses Nat.sub(currentBalance, reservedCycles) which can trap on underflow if the balance is lower than reservedCycles.",
+    "backend/blob-storage/Mixin.mo stores authorized principals in a transient state; authorized principal list will not persist across canister upgrades unless stored stably elsewhere.",
+    "backend/blob-storage/Mixin.mo _caffeineStorageCreateCertificate returns a stub response and does not create/return a real certificate."
+  ],
+  "isFixRequest": false,
+  "gameProjectType": "none",
+  "projectName": "Swift Energy Website",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0,
+  "requiresBackendChanges": false,
+  "requiresFrontendChanges": true
+}
