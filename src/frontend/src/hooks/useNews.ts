@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { News } from '../backend';
+import type { News, Time } from '../backend';
 
 export function useGetAllNews() {
   const { actor, isFetching } = useActor();
@@ -20,9 +20,17 @@ export function usePublishNews() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ title, description }: { title: string; description: string }) => {
+    mutationFn: async ({ 
+      title, 
+      description, 
+      timestamp 
+    }: { 
+      title: string; 
+      description: string; 
+      timestamp: Time;
+    }) => {
       if (!actor) throw new Error('Actor not initialized');
-      return actor.publishNews(title, description);
+      return actor.publishNews(title, description, timestamp);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['news'] });

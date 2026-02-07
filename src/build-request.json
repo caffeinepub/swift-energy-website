@@ -1,107 +1,75 @@
 {
   "kind": "build_request",
-  "title": "News page: remove date autofill, clarify date format, and add PIN-gated Options panel with Remove News workflow",
+  "title": "Fix NewsPage add-flow gating and preserve user-entered newspaper date",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Remove the date autofill control from the News entry form so users can no longer auto-populate month/day/year with today's date.",
+      "text": "Rework the NewsPage PIN-gated “+” flow so clicking the floating “+” button only opens the PIN dialog; after a correct PIN, only show the Options dialog, and do not open the Add Newspaper form unless the user explicitly clicks the “Add a Newspaper” option.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-9"
         ],
         "quotes": [
-          "can your remove the autofill date option"
+          "bro rework it when i click the + button it immediately opens the add newspaper can you make it only open if i click the Add a Newspaper in the option part after i enter the pin."
         ]
       },
       "acceptanceCriteria": [
-        "In the \"Fill in your Newspaper\" dialog, there is no calendar/autofill button/icon next to the Month/Day/Year inputs.",
-        "No code path remains that sets the date fields automatically (e.g., remove/stop using the autofill handler)."
+        "When the user clicks the floating “+” button, only the “Enter PIN” dialog opens.",
+        "After entering the correct PIN (93023) and submitting, the “Option” dialog opens and neither the Add form dialog nor the Remove dialog opens automatically.",
+        "Clicking the “Add a Newspaper” option closes the Options dialog and opens the Add Newspaper form dialog.",
+        "Clicking the “Remove News/Remove a Newspaper” option closes the Options dialog and opens the Remove dialog.",
+        "All user-facing labels for the add option use English text and read “Add a Newspaper” (not “Add News”)."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add clear helper text near the date inputs on the News entry form to distinguish Month, Day, and Year (English user-facing text).",
-      "target": "frontend",
+      "text": "Preserve the user-entered date when publishing a newspaper: use the Month/Day/Year values from the Add Newspaper form as the stored/displayed date for the new item, instead of overwriting it with the current date/time at upload.",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-9"
         ],
         "quotes": [
-          "also add like a text that can help us distinguise month day and year."
+          "Also when i upload a newspaper it immediately changes the date to the current date."
         ]
       },
       "acceptanceCriteria": [
-        "A visible helper line is shown in the Date section clarifying the expected format (e.g., \"Format: MM / DD / YYYY\").",
-        "The helper text is located adjacent to the Month/Day/Year inputs so it is seen while filling the date."
+        "Publishing a news item stores a date derived from the form’s Month/Day/Year inputs and the news list displays that stored date for the new item.",
+        "The backend no longer unconditionally uses Time.now() as the published item’s date when the user provided a date.",
+        "If the user enters an invalid date (e.g., non-numeric values or impossible month/day), the form shows an English validation error and does not publish.",
+        "Existing news items already stored continue to render without errors (they may keep their existing stored timestamps)."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "After the user enters the correct PIN, show an Options UI (titled \"Option\") that provides two selectable choices: \"Add News\" and \"Remove News\", instead of immediately opening the Add News form.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ],
-        "quotes": [
-          "Also when you enter the pin add a box titled Option with two boxes add news and remove news"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Submitting the correct PIN closes the PIN dialog and opens an Options view titled exactly \"Option\".",
-        "The Options view contains two clearly separated selectable controls labeled exactly \"Add News\" and \"Remove News\".",
-        "Selecting \"Add News\" opens the existing add-news form dialog.",
-        "Selecting \"Remove News\" opens the remove-news UI described in REQ-4."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Implement a Remove News flow: when \"Remove News\" is selected, show a section titled \"Remove a Newspaper\" with a control to choose which existing news item (text/article) to remove, and a submit action that removes it from the backend and updates the list.",
+      "text": "Update the backend publish API to accept a caller-provided timestamp (or optional timestamp) for the news item time field, and update the frontend publish hook to send the computed timestamp based on the form date inputs.",
       "target": "both",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-9"
         ],
         "quotes": [
-          "when you click remove news a new box will appear titled Remove a Newspaper and there will be a box letting you choose which text to remove and later you are able to submit to remove the news."
+          "Also when i upload a newspaper it immediately changes the date to the current date."
         ]
       },
       "acceptanceCriteria": [
-        "The UI displays a visible section (or dialog) titled exactly \"Remove a Newspaper\".",
-        "The remove UI provides a selector (e.g., dropdown/list) populated with existing news items so the user can choose one to remove.",
-        "A submit button triggers a removal request; on success, the removed item no longer appears in the Latest News list without a page refresh.",
-        "If removal fails, an English error message is shown and the item remains in the list."
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Add backend support for deleting a news item and expose it to the frontend via a new React Query mutation hook used by the Remove News flow.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ],
-        "quotes": [
-          "submit to remove the news"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend actor exposes a new update method to remove a specific news item deterministically (using an unambiguous identifier such as the news timestamp).",
-        "Frontend includes a new hook (similar to existing publish hook) to call the backend removal method and invalidates/refetches the ['news'] query on success.",
-        "Remove operations do not break existing publish/getAllNews behavior and newest-first ordering remains intact."
+        "Backend publish method supports receiving the intended time value from the frontend (while remaining compatible with existing stored news records).",
+        "Frontend publish mutation passes the computed time value when publishing from the form.",
+        "News item display continues to use the stored time value for formatting (no client-side substitution to “today”)."
       ]
     }
   ],
   "constraints": [
     "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
-    "Do not edit files under frontend/src/components/ui or other immutable paths listed in SYSTEM_CONTEXT; compose existing UI components instead."
+    "Do not edit files under frontend/src/components/ui or any paths listed as immutable in SYSTEM_CONTEXT.",
+    "Use English for any user-facing text."
   ],
   "nonGoals": [
-    "Do not add new authentication methods (Internet Identity-only; PIN gating remains client-side as currently implemented).",
-    "Do not introduce external databases or third-party APIs.",
-    "Do not change the public News page layout beyond what is necessary to support the new Options and Remove News flows."
+    "Changing the PIN value (93023) or adding a new authentication system beyond the existing PIN gate.",
+    "Adding rich media uploads (PDF/images) for newspapers; this change is only about the add/remove flow and the date being stored/displayed correctly.",
+    "Redesigning unrelated pages (Home/About/History/Innovations) beyond what’s needed to implement these fixes."
   ],
   "imageRequirements": {
     "required": [],

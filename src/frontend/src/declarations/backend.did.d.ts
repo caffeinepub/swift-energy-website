@@ -44,7 +44,7 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   'getAllNews' : ActorMethod<[], Array<News>>,
-  'publishNews' : ActorMethod<[string, string], undefined>,
+  'publishNews' : ActorMethod<[string, string, Time], undefined>,
   'removeNews' : ActorMethod<[string], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;

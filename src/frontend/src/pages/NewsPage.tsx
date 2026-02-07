@@ -10,6 +10,7 @@ import ImageSlider from '@/components/ImageSlider';
 import { useGetAllNews, usePublishNews, useRemoveNews } from '@/hooks/useNews';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { validateAndConvertDate } from '@/utils/newsDate';
 
 const CORRECT_PIN = '93023';
 
@@ -77,8 +78,19 @@ export default function NewsPage() {
       return;
     }
 
+    // Validate and convert the date
+    const dateResult = validateAndConvertDate(month, day, year);
+    if (!dateResult.valid) {
+      setFormError(dateResult.error || 'Invalid date.');
+      return;
+    }
+
     try {
-      await publishNews.mutateAsync({ title, description });
+      await publishNews.mutateAsync({ 
+        title, 
+        description, 
+        timestamp: dateResult.timestamp! 
+      });
       
       // Reset form
       setMonth('');
@@ -226,14 +238,14 @@ export default function NewsPage() {
               className="w-full h-20 text-lg"
               variant="default"
             >
-              Add News
+              Add a Newspaper
             </Button>
             <Button
               onClick={handleRemoveNewsClick}
               className="w-full h-20 text-lg"
               variant="outline"
             >
-              Remove News
+              Remove a Newspaper
             </Button>
           </div>
         </DialogContent>

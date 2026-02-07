@@ -15,11 +15,11 @@ actor {
 
   let news = List.empty<News>();
 
-  public shared ({ caller }) func publishNews(title : Text, description : Text) : async () {
+  public shared ({ caller }) func publishNews(title : Text, description : Text, timestamp : Time.Time) : async () {
     let newsItem : News = {
       title;
       description;
-      time = Time.now();
+      time = timestamp;
     };
     news.add(newsItem);
   };

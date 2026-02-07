@@ -2,8 +2,8 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-the-date-autofill-control-from-the-news-entry-form-so-users-can-no-longer-auto-populate-month-day-year-with-today-s-date",
-      "featureTitle": "Remove the date autofill control from the News entry form so users can no longer auto-populate month/day/year with today's date.",
+      "featureId": "feature-rework-the-newspage-pin-gated-flow-so-clicking-the-floating-button-only-opens-the-pin-dialog-after-a-correct-pin-only-show-the-options-dialog-and-do-not-open-the-add-newspaper-form-unless-the-user-explicitly-clicks-the-add-a-newspaper-option",
+      "featureTitle": "Rework the NewsPage PIN-gated “+” flow so clicking the floating “+” button only opens the PIN dialog; after a correct PIN, only show the Options dialog, and do not open the Add Newspaper form unless the user explicitly clicks the “Add a Newspaper” option.",
       "files": [
         "frontend/src/pages/NewsPage.tsx"
       ],
@@ -21,10 +21,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-clear-helper-text-near-the-date-inputs-on-the-news-entry-form-to-distinguish-month-day-and-year-english-user-facing-text",
-      "featureTitle": "Add clear helper text near the date inputs on the News entry form to distinguish Month, Day, and Year (English user-facing text).",
+      "featureId": "feature-preserve-the-user-entered-date-when-publishing-a-newspaper-use-the-month-day-year-values-from-the-add-newspaper-form-as-the-stored-displayed-date-for-the-new-item-instead-of-overwriting-it-with-the-current-date-time-at-upload",
+      "featureTitle": "Preserve the user-entered date when publishing a newspaper: use the Month/Day/Year values from the Add Newspaper form as the stored/displayed date for the new item, instead of overwriting it with the current date/time at upload.",
       "files": [
-        "frontend/src/pages/NewsPage.tsx"
+        "frontend/src/pages/NewsPage.tsx",
+        "frontend/src/utils/newsDate.ts"
       ],
       "components": [
         "blob-storage@4.0.0",
@@ -40,46 +41,8 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-after-the-user-enters-the-correct-pin-show-an-options-ui-titled-option-that-provides-two-selectable-choices-add-news-and-remove-news-instead-of-immediately-opening-the-add-news-form",
-      "featureTitle": "After the user enters the correct PIN, show an Options UI (titled \"Option\") that provides two selectable choices: \"Add News\" and \"Remove News\", instead of immediately opening the Add News form.",
-      "files": [
-        "frontend/src/pages/NewsPage.tsx"
-      ],
-      "components": [
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-a-remove-news-flow-when-remove-news-is-selected-show-a-section-titled-remove-a-newspaper-with-a-control-to-choose-which-existing-news-item-text-article-to-remove-and-a-submit-action-that-removes-it-from-the-backend-and-updates-the-list",
-      "featureTitle": "Implement a Remove News flow: when \"Remove News\" is selected, show a section titled \"Remove a Newspaper\" with a control to choose which existing news item (text/article) to remove, and a submit action that removes it from the backend and updates the list.",
-      "files": [
-        "frontend/src/pages/NewsPage.tsx"
-      ],
-      "components": [
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-backend-support-for-deleting-a-news-item-and-expose-it-to-the-frontend-via-a-new-react-query-mutation-hook-used-by-the-remove-news-flow",
-      "featureTitle": "Add backend support for deleting a news item and expose it to the frontend via a new React Query mutation hook used by the Remove News flow.",
+      "featureId": "feature-update-the-backend-publish-api-to-accept-a-caller-provided-timestamp-or-optional-timestamp-for-the-news-item-time-field-and-update-the-frontend-publish-hook-to-send-the-computed-timestamp-based-on-the-form-date-inputs",
+      "featureTitle": "Update the backend publish API to accept a caller-provided timestamp (or optional timestamp) for the news item time field, and update the frontend publish hook to send the computed timestamp based on the form date inputs.",
       "files": [
         "frontend/src/hooks/useNews.ts",
         "frontend/src/pages/NewsPage.tsx"
@@ -93,7 +56,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-5"
+        "REQ-3"
       ],
       "confidence": "high"
     }

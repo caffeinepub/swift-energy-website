@@ -1,18 +1,18 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T08:56:20.779Z",
+  "generatedAt": "2026-02-07T09:08:52.232Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 5,
-    "implemented": 5,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Remove the date autofill control from the News entry form so users can no longer auto-populate month/day/year with today's date.",
+        "summary": "Rework the NewsPage PIN-gated “+” flow so clicking the floating “+” button only opens the PIN dialog; after a correct PIN, only show the Options dialog, and do not open the Add Newspaper form unless the user explicitly clicks the “Add a Newspaper” option.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/pages/NewsPage.tsx"
@@ -23,40 +23,20 @@
       },
       {
         "id": "REQ-2",
-        "summary": "Add clear helper text near the date inputs on the News entry form to distinguish Month, Day, and Year (English user-facing text).",
+        "summary": "Preserve the user-entered date when publishing a newspaper: use the Month/Day/Year values from the Add Newspaper form as the stored/displayed date for the new item, instead of overwriting it with the current date/time at upload.",
         "status": "implemented",
         "plannedFiles": [
+          "frontend/src/utils/newsDate.ts",
           "frontend/src/pages/NewsPage.tsx"
         ],
         "matchedFiles": [
+          "frontend/src/utils/newsDate.ts",
           "frontend/src/pages/NewsPage.tsx"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "After the user enters the correct PIN, show an Options UI (titled \"Option\") that provides two selectable choices: \"Add News\" and \"Remove News\", instead of immediately opening the Add News form.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/NewsPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/NewsPage.tsx"
-        ]
-      },
-      {
-        "id": "REQ-4",
-        "summary": "Implement a Remove News flow: when \"Remove News\" is selected, show a section titled \"Remove a Newspaper\" with a control to choose which existing news item (text/article) to remove, and a submit action that removes it from the backend and updates the list.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/NewsPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/NewsPage.tsx"
-        ]
-      },
-      {
-        "id": "REQ-5",
-        "summary": "Add backend support for deleting a news item and expose it to the frontend via a new React Query mutation hook used by the Remove News flow.",
+        "summary": "Update the backend publish API to accept a caller-provided timestamp (or optional timestamp) for the news item time field, and update the frontend publish hook to send the computed timestamp based on the form date inputs.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/hooks/useNews.ts",
@@ -81,6 +61,7 @@
     "frontend/src/declarations/backend.did.js",
     "frontend/src/hooks/useNews.ts",
     "frontend/src/pages/NewsPage.tsx",
+    "frontend/src/utils/newsDate.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

@@ -1,13 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Update the News publishing experience by removing date autofill, clarifying the date format, and adding a PIN-gated Options panel that includes a Remove News workflow.
+**Goal:** Fix the NewsPage “+” PIN-gated add/remove flow so dialogs open in the correct order, and ensure published newspapers keep the user-entered date instead of being overwritten by the current time.
 
 **Planned changes:**
-- Remove the date autofill/calendar control from the News entry form and eliminate any logic that auto-populates Month/Day/Year with today’s date.
-- Add visible helper text next to the Month/Day/Year inputs to clarify the expected date format (e.g., “Format: MM / DD / YYYY”).
-- After correct PIN entry, show an Options view titled exactly “Option” with two selectable choices: “Add News” and “Remove News”, instead of immediately opening the Add News form.
-- Implement a “Remove News” UI titled exactly “Remove a Newspaper” that lets the user select an existing news item and submit a removal action.
-- Add backend deletion support for removing a specific news item (using an unambiguous identifier) and expose it to the frontend via a new React Query mutation that updates the Latest News list on success and shows an English error message on failure.
+- Update the floating “+” button behavior so it only opens the “Enter PIN” dialog; on correct PIN (93023), open only the Options dialog.
+- Ensure the Options dialog does not automatically open Add/Remove dialogs; open “Add Newspaper” or “Remove News/Remove a Newspaper” only after the user selects the corresponding option, and label the add option as “Add a Newspaper”.
+- Preserve the Month/Day/Year date entered in the Add Newspaper form by validating it and using it as the stored/displayed date for the new news item.
+- Update the backend publish API to accept an optional caller-provided timestamp for the news item time field, and update the frontend publish logic to send the computed timestamp from the form date inputs.
 
-**User-visible outcome:** Users can no longer autofill the date and will see a clear date format hint; after entering the PIN they can choose to add news or remove an existing news item, with removals reflected immediately in the Latest News list.
+**User-visible outcome:** Clicking “+” first asks for the PIN, then shows Options; Add/Remove screens open only when chosen. When publishing a newspaper, the app keeps and displays the date entered in the form (with English validation errors for invalid dates).

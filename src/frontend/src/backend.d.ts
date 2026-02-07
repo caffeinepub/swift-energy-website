@@ -15,6 +15,6 @@ export interface News {
 export type Time = bigint;
 export interface backendInterface {
     getAllNews(): Promise<Array<News>>;
-    publishNews(title: string, description: string): Promise<void>;
+    publishNews(title: string, description: string, timestamp: Time): Promise<void>;
     removeNews(title: string): Promise<void>;
 }

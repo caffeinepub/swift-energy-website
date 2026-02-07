@@ -1,48 +1,36 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Build a News page/form with improved date entry UX (no autofill, clear month/day/year guidance) and a PIN-gated Options panel supporting adding news and a guided remove-news workflow (select item and submit removal).",
-  "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
+  "summary": "Website/admin UI for managing news/newspapers with a PIN-gated add/remove flow; personalize the homepage label to \"Swift Energy Website\".",
+  "architectural_notes": [
+    "PIN-gated + button should open an Option menu (Add Newspaper / Remove News) rather than directly launching the add flow."
+  ],
+  "known_issues": [
+    "Uploading a newspaper currently overwrites its date with the current date."
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-remove-the-date-autofill-control-from-the-news-entry-form-so-users-can-no-longer-auto-populate-month-day-year-with-today-s-date",
-      "title": "Remove the date autofill control from the News entry form so users can no longer auto-populate month/day/year with today's date.",
+      "id": "feature-rework-the-newspage-pin-gated-flow-so-clicking-the-floating-button-only-opens-the-pin-dialog-after-a-correct-pin-only-show-the-options-dialog-and-do-not-open-the-add-newspaper-form-unless-the-user-explicitly-clicks-the-add-a-newspaper-option",
+      "title": "Rework the NewsPage PIN-gated “+” flow so clicking the floating “+” button only opens the PIN dialog; after a correct PIN, only show the Options dialog, and do not open the Add Newspaper form unless the user explicitly clicks the “Add a Newspaper” option.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-clear-helper-text-near-the-date-inputs-on-the-news-entry-form-to-distinguish-month-day-and-year-english-user-facing-text",
-      "title": "Add clear helper text near the date inputs on the News entry form to distinguish Month, Day, and Year (English user-facing text).",
+      "id": "feature-preserve-the-user-entered-date-when-publishing-a-newspaper-use-the-month-day-year-values-from-the-add-newspaper-form-as-the-stored-displayed-date-for-the-new-item-instead-of-overwriting-it-with-the-current-date-time-at-upload",
+      "title": "Preserve the user-entered date when publishing a newspaper: use the Month/Day/Year values from the Add Newspaper form as the stored/displayed date for the new item, instead of overwriting it with the current date/time at upload.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-after-the-user-enters-the-correct-pin-show-an-options-ui-titled-option-that-provides-two-selectable-choices-add-news-and-remove-news-instead-of-immediately-opening-the-add-news-form",
-      "title": "After the user enters the correct PIN, show an Options UI (titled \"Option\") that provides two selectable choices: \"Add News\" and \"Remove News\", instead of immediately opening the Add News form.",
+      "id": "feature-update-the-backend-publish-api-to-accept-a-caller-provided-timestamp-or-optional-timestamp-for-the-news-item-time-field-and-update-the-frontend-publish-hook-to-send-the-computed-timestamp-based-on-the-form-date-inputs",
+      "title": "Update the backend publish API to accept a caller-provided timestamp (or optional timestamp) for the news item time field, and update the frontend publish hook to send the computed timestamp based on the form date inputs.",
       "reqIds": [
         "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-a-remove-news-flow-when-remove-news-is-selected-show-a-section-titled-remove-a-newspaper-with-a-control-to-choose-which-existing-news-item-text-article-to-remove-and-a-submit-action-that-removes-it-from-the-backend-and-updates-the-list",
-      "title": "Implement a Remove News flow: when \"Remove News\" is selected, show a section titled \"Remove a Newspaper\" with a control to choose which existing news item (text/article) to remove, and a submit action that removes it from the backend and updates the list.",
-      "reqIds": [
-        "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-backend-support-for-deleting-a-news-item-and-expose-it-to-the-frontend-via-a-new-react-query-mutation-hook-used-by-the-remove-news-flow",
-      "title": "Add backend support for deleting a news item and expose it to the frontend via a new React Query mutation hook used by the Remove News flow.",
-      "reqIds": [
-        "REQ-5"
       ],
       "version": 1
     }
@@ -50,30 +38,18 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Remove the date input autofill option.",
+      "summary": "Change + button behavior: after PIN entry show an Option menu (Add/Remove) and only open the Add Newspaper flow when the user selects \"Add a Newspaper\".",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "Add helper text to clarify the date format (distinguish month/day/year) near the date input.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "After entering the PIN, show an 'Option' section with two choices: 'Add News' and 'Remove News'.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Implement 'Remove News' flow: clicking it reveals a 'Remove a Newspaper' section with a selector to choose which text/news item to remove and a submit action to confirm removal.",
+      "summary": "Preserve the intended newspaper date on upload (do not automatically overwrite it with the current date).",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "News page: remove date autofill, clarify date format, and add PIN-gated Options panel with Remove News workflow",
+  "projectName": "Swift Energy Website",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

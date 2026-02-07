@@ -114,7 +114,7 @@ export interface backendInterface {
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
     getAllNews(): Promise<Array<News>>;
-    publishNews(title: string, description: string): Promise<void>;
+    publishNews(title: string, description: string, timestamp: Time): Promise<void>;
     removeNews(title: string): Promise<void>;
 }
 import type { _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
@@ -218,17 +218,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async publishNews(arg0: string, arg1: string): Promise<void> {
+    async publishNews(arg0: string, arg1: string, arg2: Time): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.publishNews(arg0, arg1);
+                const result = await this.actor.publishNews(arg0, arg1, arg2);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.publishNews(arg0, arg1);
+            const result = await this.actor.publishNews(arg0, arg1, arg2);
             return result;
         }
     }
